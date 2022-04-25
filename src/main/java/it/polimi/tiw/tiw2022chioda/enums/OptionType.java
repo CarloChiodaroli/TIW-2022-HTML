@@ -8,6 +8,7 @@ public enum OptionType {
         return switch(type){
             case "STANDARD" -> STANDARD;
             case "SALE" -> SALE;
+            default -> null;
         };
     }
 }

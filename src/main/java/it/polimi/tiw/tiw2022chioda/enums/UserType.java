@@ -8,6 +8,7 @@ public enum UserType {
         return switch(type){
             case "CLIENT" -> CLIENT;
             case "EMPLOYEE" -> EMPLOYEE;
+            default -> null;
         };
     }
 }

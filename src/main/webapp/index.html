@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page - EM</title>
+</head>
+<body>
+<h1>Welcome to the Estimate Management website</h1>
+<form action="CheckLogin" method="POST">
+    Username: <input type="text" name="username" required><br>
+    Password: <input type="password" name="password" required><br>
+    <input type="submit" value="login">
+    <p th:text="${errorMsg}"></p>
+</form>
+</body>
+</html>
