@@ -24,6 +24,30 @@
         <param-name>productImagesSource</param-name>
         <param-value>images/dbImages/</param-value>
     </context-param>
+    <filter>
+        <filter-name>EmployeeChecker</filter-name>
+        <filter-class>it.polimi.tiw.tiw2022chioda.filters.EmployeeChecker</filter-class>
+    </filter>
+    <filter>
+        <filter-name>ClientChecker</filter-name>
+        <filter-class>it.polimi.tiw.tiw2022chioda.filters.ClientChecker</filter-class>
+    </filter>
+    <filter>
+        <filter-name>LoginChecker</filter-name>
+        <filter-class>it.polimi.tiw.tiw2022chioda.filters.LoginChecker</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginChecker</filter-name>
+        <url-pattern>/GoToHome</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ClientChecker</filter-name>
+        <url-pattern>/GetOptions</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>EmployeeChecker</filter-name>
+        <url-pattern>/PriceEstimate</url-pattern>
+    </filter-mapping>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
