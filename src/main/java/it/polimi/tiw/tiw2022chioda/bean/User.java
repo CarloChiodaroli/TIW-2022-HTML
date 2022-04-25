@@ -7,22 +7,12 @@ import java.util.Objects;
 public class User {
 
     private int ID;
-    private String name;
-    private String surname;
     private String email;
     private String username;
     private UserType userType;
 
     public int getID() {
         return ID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
     }
 
     public String getEmail() {
@@ -57,14 +47,6 @@ public class User {
         this.ID = ID;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -73,8 +55,6 @@ public class User {
     public String toString() {
         return "User{" +
                 "ID=" + ID +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
                 ", userType=" + userType +
@@ -86,11 +66,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return ID == user.ID && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(email, user.email) && Objects.equals(username, user.username) && userType == user.userType;
+        return ID == user.ID && Objects.equals(email, user.email) && Objects.equals(username, user.username) && userType == user.userType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID, name, surname, email, username, userType);
+        return Objects.hash(ID, email, username, userType);
     }
 }

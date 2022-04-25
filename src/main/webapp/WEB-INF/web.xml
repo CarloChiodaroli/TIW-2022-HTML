@@ -6,7 +6,7 @@
     <display-name>TIW-109-HTML</display-name>
     <context-param>
         <param-name>dbUrl</param-name>
-        <param-value>jdbc:mysql://localhost:3306/dbtest?serverTimezone=UTC</param-value>
+        <param-value>jdbc:mysql://localhost:3306/estimate_management?serverTimezone=UTC</param-value>
     </context-param>
     <context-param>
         <param-name>dbUser</param-name>
