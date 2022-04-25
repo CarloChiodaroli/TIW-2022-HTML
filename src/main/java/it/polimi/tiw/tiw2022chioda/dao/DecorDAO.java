@@ -22,24 +22,23 @@ public class DecorDAO extends DAO {
         preparedStatement.setInt(1, estimateCode);
         ResultSet result = super.coreQueryExecutor(preparedStatement);
         List<Integer> codes = new ArrayList<>();
-        do {
+        while (result.next()) {
             codes.add(result.getInt("OPT"));
-            result.next();
-        } while (!result.isAfterLast());
+        }
         return codes;
     }
 
     public void setDecorForEstimate(int estimateCode, List<Integer> optionCodes)
-            throws SQLException{
+            throws SQLException {
         String query = "INSERT INTO DECOR (ESTIMATE, OPT) " +
                 "VALUES (?, ?) ";
-        for(Integer optionCode: optionCodes){
+        for (Integer optionCode : optionCodes) {
             PreparedStatement preparedStatement = super.prepareQuery(query);
             preparedStatement.setInt(1, estimateCode);
             preparedStatement.setInt(2, optionCode);
             preparedStatement.executeUpdate();
             ResultSet result = preparedStatement.getGeneratedKeys();
-            if(!result.next()){
+            if (!result.next()) {
                 String error = "Could not register " + optionCode + " option";
                 System.err.println(error);
                 throw new SQLException(error);

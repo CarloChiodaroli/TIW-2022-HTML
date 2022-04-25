@@ -105,7 +105,7 @@ public class EstimateDAO extends DAO {
     }
 
     public Estimate createEstimate(Estimate candidate, User client)
-            throws WrongUserTypeException, SQLException{
+            throws WrongUserTypeException, SQLException {
         controlClient(client);
         super.getConnection().setAutoCommit(false);
         String queryEstimate = "INSERT INTO ESTIMATE (CLIENT, PRODUCT)" +
@@ -115,18 +115,18 @@ public class EstimateDAO extends DAO {
         preparedStatement.setInt(2, candidate.getProductCode());
         preparedStatement.executeUpdate();
         ResultSet result = preparedStatement.getGeneratedKeys();
-        if(result.next()){
+        if (result.next()) {
             candidate.setCode(result.getInt(1));
             registerOptions(candidate);
-            try{
+            try {
                 super.getConnection().commit();
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 System.err.println("Commit failed");
                 throw e;
             }
-            try{
+            try {
                 super.getConnection().setAutoCommit(true);
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 System.err.println("Autocommit reset to 'true' failed");
                 throw e;
             }
@@ -136,7 +136,7 @@ public class EstimateDAO extends DAO {
         }
     }
 
-    private void registerOptions(Estimate estimate) throws SQLException{
+    private void registerOptions(Estimate estimate) throws SQLException {
         DecorDAO decorDAO = new DecorDAO(super.getConnection());
         decorDAO.setDecorForEstimate(estimate.getCode(), estimate.getOptionCodes());
     }

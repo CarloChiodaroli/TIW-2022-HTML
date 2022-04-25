@@ -9,15 +9,15 @@ public abstract class DAO {
 
     private final Connection connection;
 
-    public DAO(Connection connection){
+    public DAO(Connection connection) {
         this.connection = connection;
     }
 
-    protected Connection getConnection(){
+    protected Connection getConnection() {
         return connection;
     }
 
-    protected PreparedStatement prepareQuery(String sql) throws SQLException{
+    protected PreparedStatement prepareQuery(String sql) throws SQLException {
         PreparedStatement preparedStatement;
         try {
             preparedStatement = connection.prepareStatement(sql);
@@ -28,15 +28,15 @@ public abstract class DAO {
         return preparedStatement;
     }
 
-    protected ResultSet coreQueryExecutor(PreparedStatement preparedStatement) throws SQLException{
+    protected ResultSet coreQueryExecutor(PreparedStatement preparedStatement) throws SQLException {
         ResultSet result;
         try {
             result = preparedStatement.executeQuery();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.err.println("Couldn't execute Query");
             throw e;
         }
-        if(!result.isBeforeFirst()){
+        if (!result.isBeforeFirst()) {
             return null;
         }
         return result;

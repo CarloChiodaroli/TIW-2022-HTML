@@ -7,14 +7,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDAO extends DAO{
+public class UserDAO extends DAO {
 
-    public UserDAO(Connection connection){
+    public UserDAO(Connection connection) {
         super(connection);
     }
 
     public User registerCredentials(User candidate, String password)
-            throws SQLException{
+            throws SQLException {
         String query = "INSERT INTO USER (username, email, usertype, password)" +
                 "VALUES (?, ?, ?, ?)";
         PreparedStatement preparedStatement = super.prepareQuery(query);
@@ -24,7 +24,7 @@ public class UserDAO extends DAO{
         preparedStatement.setString(4, password);
         preparedStatement.executeUpdate();
         ResultSet result = preparedStatement.getGeneratedKeys();
-        if(result.next()){
+        if (result.next()) {
             candidate.setID(result.getInt(1));
             return candidate;
         } else {
@@ -32,7 +32,7 @@ public class UserDAO extends DAO{
         }
     }
 
-    public boolean isUsernamePresent(String username) throws SQLException{
+    public boolean isUsernamePresent(String username) throws SQLException {
         String query = "SELECT USERNAME " +
                 "FROM USER " +
                 "WHERE USERNAME = ?";
@@ -41,14 +41,14 @@ public class UserDAO extends DAO{
         ResultSet result;
         try {
             result = preparedStatement.executeQuery();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.err.println("Couldn't execute Query");
             throw e;
         }
         return !result.isBeforeFirst();
     }
 
-    public User checkCredentials(String username, String password) throws SQLException{
+    public User checkCredentials(String username, String password) throws SQLException {
         String query = "SELECT ID, USERNAME, EMAIL, USERTYPE " +
                 "FROM USER " +
                 "WHERE USERNAME = ? AND PASSWORD = ?";
@@ -58,7 +58,7 @@ public class UserDAO extends DAO{
         return coreUserGetter(preparedStatement);
     }
 
-    public User getById(int id) throws SQLException{
+    public User getById(int id) throws SQLException {
         String query = "SELECT ID, USERNAME, EMAIL, USERTYPE " +
                 "FROM USER " +
                 "WHERE ID = ? ";
@@ -67,7 +67,7 @@ public class UserDAO extends DAO{
         return coreUserGetter(preparedStatement);
     }
 
-    private User coreUserGetter(PreparedStatement preparedStatement) throws SQLException{
+    private User coreUserGetter(PreparedStatement preparedStatement) throws SQLException {
         ResultSet result = super.coreQueryExecutor(preparedStatement);
         result.next();
         User user = new User();
