@@ -5,15 +5,16 @@ import it.polimi.tiw.tiw2022chioda.exception.WrongUserTypeException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Estimate {
 
     private int code;
-    private User client;
-    private User employee;
-    private Product product;
+    private int client;
+    private int employee;
+    private int product;
     private double price;
-    private List<Option> options;
+    private List<Integer> options;
 
     public int getCode() {
         return code;
@@ -27,35 +28,49 @@ public class Estimate {
         return price;
     }
 
-    public List<Option> getOptions() {
+    public List<Integer> getOptionCodes() {
         return options;
     }
 
-    public Product getProduct() {
+    public int getProductCode() {
         return product;
     }
 
-    public User getClient() {
+    public int getClientId() {
         return client;
     }
 
-    public User getEmployee() {
+    public int getEmployeeId() {
         return employee;
     }
 
     public void setClient(User client) throws WrongUserTypeException {
         if(UserType.CLIENT.equals(client.getUserType()))
             throw new WrongUserTypeException(UserType.CLIENT, client.getUserType());
-        this.client = client;
+        this.client = client.getID();
+    }
+
+    public void setClientId(int clientId){
+        this.client = clientId;
     }
 
     public void setEmployee(User employee) throws WrongUserTypeException{
-        if(UserType.EMPLOYEE.equals(client.getUserType()))
-            throw new WrongUserTypeException(UserType.EMPLOYEE, client.getUserType());
-        this.employee = employee;
+        if(UserType.EMPLOYEE.equals(employee.getUserType()))
+            throw new WrongUserTypeException(UserType.EMPLOYEE, employee.getUserType());
+        this.employee = employee.getID();
+    }
+
+    public void setEmployeeId(int employeeId){
+        this.employee = employeeId;
     }
 
     public void setOptions(List<Option> options) {
+        this.options = options.stream()
+                .map(Option::getCode)
+                .collect(Collectors.toList());
+    }
+
+    public void setOptionCodes(List<Integer> options) {
         this.options = options;
     }
 
@@ -64,7 +79,11 @@ public class Estimate {
     }
 
     public void setProduct(Product product) {
-        this.product = product;
+        this.product = product.getCode();
+    }
+
+    public void setProductCode(int productCode) {
+        this.product = productCode;
     }
 
     @Override
