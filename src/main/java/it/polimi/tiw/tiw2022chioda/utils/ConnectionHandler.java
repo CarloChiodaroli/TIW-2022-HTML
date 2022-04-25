@@ -6,8 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static java.lang.Class.forName;
-
 public class ConnectionHandler {
 
     public static Connection getConnection(ServletContext context)

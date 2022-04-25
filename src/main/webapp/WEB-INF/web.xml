@@ -6,7 +6,7 @@
     <display-name>TIW-109-HTML</display-name>
     <context-param>
         <param-name>dbUrl</param-name>
-        <param-value>jdbc:mysql://localhost:3306/estimate_management?serverTimezone=UTC</param-value>
+        <param-value>jdbc:mysql://localhost:3306/estimate_management</param-value>
     </context-param>
     <context-param>
         <param-name>dbUser</param-name>
@@ -39,6 +39,8 @@
     <filter-mapping>
         <filter-name>LoginChecker</filter-name>
         <url-pattern>/GoToHome</url-pattern>
+        <url-pattern>/GetOptions</url-pattern>
+        <url-pattern>/PriceEstimate</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ClientChecker</filter-name>
