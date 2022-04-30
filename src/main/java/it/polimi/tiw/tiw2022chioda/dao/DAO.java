@@ -36,9 +36,6 @@ public abstract class DAO {
             System.err.println("Couldn't execute Query");
             throw e;
         }
-        if (!result.isBeforeFirst()) {
-            return null;
-        }
         return result;
     }
 }

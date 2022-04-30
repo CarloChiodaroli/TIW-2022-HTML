@@ -1,9 +1,12 @@
 package it.polimi.tiw.tiw2022chioda.controller;
 
 import it.polimi.tiw.tiw2022chioda.bean.Estimate;
+import it.polimi.tiw.tiw2022chioda.bean.Option;
 import it.polimi.tiw.tiw2022chioda.bean.Product;
 import it.polimi.tiw.tiw2022chioda.bean.User;
+import it.polimi.tiw.tiw2022chioda.dao.AvailabilityDAO;
 import it.polimi.tiw.tiw2022chioda.dao.EstimateDAO;
+import it.polimi.tiw.tiw2022chioda.dao.OptionDAO;
 import it.polimi.tiw.tiw2022chioda.dao.ProductDAO;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
 import org.thymeleaf.TemplateEngine;
@@ -23,11 +26,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @WebServlet(name = "GoToHome", value = "/GoToHome")
 public class GoToHome extends HttpServlet {
+
+    private static final String clientHomePagePath = "WEB-INF/clientHomePage.html";
+    private static final String employeeHomePagePath = "WEB-INF/employeeHomePage.html";
 
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
@@ -71,32 +75,56 @@ public class GoToHome extends HttpServlet {
         HttpSession session = request.getSession();
         EstimateDAO estimateDAO = new EstimateDAO(connection);
         ProductDAO productDAO = new ProductDAO(connection);
+        AvailabilityDAO availabilityDAO = new AvailabilityDAO(connection);
+        OptionDAO optionDAO = new OptionDAO(connection);
         User user = (User) session.getAttribute("user");
+        List<Estimate> userEstimates = getUserEstimates(estimateDAO, user, response);
+        List<Product> products = getAllProducts(productDAO, response);
+        List<Option> optionsOfProduct = new ArrayList<>();
+        String chosenProduct = request.getParameter("productCode");
+        if(chosenProduct != null){
+            int productCode = Integer.parseInt(chosenProduct);
+            try {
+                List<Integer> optionCodes = availabilityDAO.getFromProduct(productCode);
+                for(Integer optionCode: optionCodes){
+                    optionsOfProduct.add(optionDAO.getFromCode(optionCode));
+                }
+            } catch (SQLException e){
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering options");
+                return;
+            }
+        }
+        ServletContext servletContext = getServletContext();
+        final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+        ctx.setVariable("estimates", userEstimates);
+        ctx.setVariable("products", products);
+        ctx.setVariable("options", optionsOfProduct);
+        ctx.setVariable("user", user.getUsername());
+        templateEngine.process(clientHomePagePath, ctx, response.getWriter());
+    }
+
+    private List<Estimate> getUserEstimates(EstimateDAO estimateDAO, User user, HttpServletResponse response)
+            throws IOException {
         List<Estimate> userEstimates;
         try {
             userEstimates = estimateDAO.getByUser(user);
         } catch (SQLException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering estimates");
-            return;
+            return new ArrayList<>();
         }
-        List<Product> products = new ArrayList<>();
+        return userEstimates;
+    }
+
+    private List<Product> getAllProducts(ProductDAO productDAO, HttpServletResponse response)
+            throws IOException {
+        List<Product> products;
         try {
-            for(Estimate estimate: userEstimates){
-                Product product = productDAO.getByCode(estimate.getProductCode());
-                if(!products.contains(product)){
-                    products.add(product);
-                }
-            }
+            products = productDAO.getAll();
         } catch (SQLException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering products");
-            return;
+            return new ArrayList<>();
         }
-        String path = "WEB-INF/clientHomePage.html";
-        ServletContext servletContext = getServletContext();
-        final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-        ctx.setVariable("estimates", userEstimates);
-        ctx.setVariable("products", products);
-        templateEngine.process(path, ctx, response.getWriter());
+        return products;
     }
 
     private void getEmployeeHomePage(HttpServletRequest request, HttpServletResponse response)
@@ -105,6 +133,28 @@ public class GoToHome extends HttpServlet {
         EstimateDAO estimateDAO = new EstimateDAO(connection);
         ProductDAO productDAO = new ProductDAO(connection);
         User user = (User) session.getAttribute("user");
+        List<Estimate> pricedEstimates;
+        List<Estimate> notPricedEstimates;
+        try {
+            pricedEstimates = estimateDAO.getByUser(user);
+        } catch (SQLException e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering priced estimates");
+            return;
+        }
+        try {
+            notPricedEstimates = estimateDAO.getNotPriced(user);
+        } catch (SQLException e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering not priced estimates");
+            return;
+        }
+        List<Product> products = getAllProducts(productDAO, response);
+        ServletContext servletContext = getServletContext();
+        final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+        ctx.setVariable("pricedEstimates", pricedEstimates);
+        ctx.setVariable("products", products);
+        ctx.setVariable("notPricedEstimates", notPricedEstimates);
+        ctx.setVariable("user", user.getUsername());
+        templateEngine.process(employeeHomePagePath, ctx, response.getWriter());
     }
 
     @Override

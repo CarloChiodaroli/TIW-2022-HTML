@@ -32,7 +32,7 @@ public class User {
     }
 
     public void setUserType(String userType){
-        this.userType = UserType.getUserTypeFromString(userType);
+        this.userType = UserType.valueOf(userType);
     }
 
     public void setUserType(UserType userType) {

@@ -5,6 +5,27 @@
     <title>Employee Home Page - EM</title>
 </head>
 <body>
-
+    <h1>Welcome Employee: <p th:text='${session.user.username}'></p></h1>
+    <span th:text="'Welcome Employee ' + ${session.user.username}">Welcome Employee</span>
+    <div th:if="${!pricedEstimates.isEmpty()}">
+        <tr th:each="pricedEstimate : ${pricedEstimates}">
+            <td th:text="pricedEstimate.productCode"></td>
+            <td th:text="pricedEstimate.employee"></td>
+            <td th:text="pricedEstimate.client"></td>
+        </tr>
+    </div>
+    <div th:if="${pricedEstimates.isEmpty()}">
+        No estimates found;
+    </div>
+    <div th:if="${!notPricedEstimates.isEmpty()}">
+        <tr th:each="pricedEstimate : ${pricedEstimates}">
+            <td th:text="pricedEstimate.productCode"></td>
+            <td th:text="pricedEstimate.employee"></td>
+            <td th:text="pricedEstimate.client"></td>
+        </tr>
+    </div>
+    <div th:if="${notPricedEstimates.isEmpty()}">
+        No estimates need to be priced;
+    </div>
 </body>
 </html>

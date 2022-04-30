@@ -10,7 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EstimateDAO extends DAO {
 
@@ -40,15 +42,15 @@ public class EstimateDAO extends DAO {
     }
 
     public List<Estimate> getByUser(User user) throws WrongUserTypeException, SQLException {
-        String queryClient = "WHERE CLIENT = ? ";
-        String queryEmployee = "WHERE EMPLOYEE = ? ";
+        Map<UserType, String> queries = new HashMap<>();
+        queries.put(UserType.CLIENT, "WHERE CLIENT = ? ");
+        queries.put(UserType.EMPLOYEE, "WHERE EMPLOYEE = ? ");
         String query = "SELECT CLIENT, EMPLOYEE, PRICE, PRODUCT, CODE " +
                 "FROM ESTIMATE ";
-        switch (user.getUserType()) {
-            case CLIENT -> query = query + queryClient;
-            case EMPLOYEE -> query = query + queryEmployee;
-            default -> throw new WrongUserTypeException(user.getUserType());
-        }
+
+        if (!queries.containsKey(user.getUserType())) throw new WrongUserTypeException(user.getUserType());
+        query += queries.get(user.getUserType());
+
         PreparedStatement preparedStatement = super.prepareQuery(query);
         preparedStatement.setInt(1, user.getID());
         ResultSet result = super.coreQueryExecutor(preparedStatement);
@@ -68,10 +70,10 @@ public class EstimateDAO extends DAO {
 
     private List<Estimate> coreEstimateListSetter(ResultSet result) throws SQLException {
         List<Estimate> estimateList = new ArrayList<>();
-        do {
+        while (result.isAfterLast()) {
             estimateList.add(coreEstimateSetter(result));
             result.next();
-        } while (result.isAfterLast());
+        }
         return estimateList;
     }
 
