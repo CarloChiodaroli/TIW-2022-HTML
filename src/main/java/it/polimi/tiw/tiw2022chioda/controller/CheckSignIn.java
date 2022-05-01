@@ -39,25 +39,25 @@ public class CheckSignIn extends HttpServlet {
         String password = null;
         String repeatedPassword = null;
         String userType = null;
-        String EMail = null;
+        String eMail = null;
 
         username = StringEscapeUtils.escapeJava(request.getParameter("username"));
         password = StringEscapeUtils.escapeJava(request.getParameter("password"));
         repeatedPassword = StringEscapeUtils.escapeJava(request.getParameter("rep-password"));
         userType = StringEscapeUtils.escapeJava(request.getParameter("usertype"));
-        EMail = StringEscapeUtils.escapeJava(request.getParameter("email"));
+        eMail = StringEscapeUtils.escapeJava(request.getParameter("email"));
 
         //Controls
         if (username == null ||
                 password == null ||
                 repeatedPassword == null ||
                 userType == null ||
-                EMail == null ||
+                eMail == null ||
                 username.isEmpty() ||
                 password.isEmpty() ||
                 repeatedPassword.isEmpty() ||
                 userType.isEmpty() ||
-                EMail.isEmpty()) {
+                eMail.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("Credentials must be not empty");
             return;
@@ -67,7 +67,7 @@ public class CheckSignIn extends HttpServlet {
             response.getWriter().println("Passwords do not coincide");
             return;
         }
-        if(!isEMail(EMail)){
+        if(!isEMail(eMail)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("Given e-mail is not a valid e-mail address");
             return;
@@ -87,7 +87,7 @@ public class CheckSignIn extends HttpServlet {
         try {
             user.setUserType(userType);
             user.setUsername(username);
-            user.setEmail(EMail);
+            user.setEmail(eMail);
             user = userDAO.registerCredentials(user, password);
         } catch (SQLException e) {
             response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while querying database: " + e.getMessage());

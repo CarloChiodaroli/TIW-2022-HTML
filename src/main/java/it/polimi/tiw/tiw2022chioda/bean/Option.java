@@ -33,7 +33,7 @@ public class Option {
     }
 
     public void setType(String type){
-        this.type = OptionType.getUserTypeFromString(type);
+        this.type = OptionType.valueOf(type);
     }
 
     public void setType(OptionType type){

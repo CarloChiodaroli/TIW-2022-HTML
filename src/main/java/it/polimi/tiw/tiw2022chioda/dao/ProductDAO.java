@@ -21,7 +21,7 @@ public class ProductDAO extends DAO {
         PreparedStatement preparedStatement = super.prepareQuery(query);
         ResultSet resultSet = super.coreQueryExecutor(preparedStatement);
         List<Product> result = new ArrayList<>();
-        while (!resultSet.next()) {
+        while (resultSet.next()) {
             Product product = new Product();
             product.setCode(resultSet.getInt("CODE"));
             product.setImage(resultSet.getString("IMAGE"));

@@ -5,6 +5,69 @@
     <title>Client Home Page</title>
 </head>
 <body>
-
+    <span th:text="'Welcome Client ' + ${session.user.username}"></span>
+    <div>
+        <div th:unless="${estimates.isEmpty()}">
+            <span>Available Estimates</span>
+            <table>
+                <tr>
+                    <th>CODE</th>
+                    <th>Employee ID</th>
+                    <th>Client ID</th>
+                </tr>
+                <tr th:each="estimate : ${estimates}">
+                    <td th:text="${estimate.prodctCode}"></td>
+                    <td th:text="${estimate.employee}"></td>
+                    <td th:text="${estimate.client}"></td>
+                </tr>
+            </table>
+        </div>
+        <div th:if="${estimates.isEmpty()}">
+            No estimates found
+        </div>
+    </div>
+    <div>
+        <div th:if="${actualProductCode == -1}">
+            <span>Available products</span>
+            <table>
+                <tr>
+                    <th>CODE</th>
+                    <th>NAME</th>
+                    <th>IMAGE</th>
+                </tr>
+                <tr th:each="product : ${products}">
+                    <td th:text="${product.code}"></td>
+                    <td th:text="${product.name}"></td>
+                    <td th:text="${product.image}"></td>
+                </tr>
+            </table>
+            <span>Choose one product to asking for an estimate: </span>
+            <table>
+                <tr th:each="product : ${products}">
+                    <td>
+                        <a th:text="${product.name}" th:href="'GoToClientHome?productCode=' + ${product.code}"></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div th:unless="${actualProductCode == -1}">
+            hallo
+            <span th:text="'Chosen Product Code: ' + ${actualProductCode}"></span><br>
+            hallo
+            <span>Available options</span>
+            <table>
+                <tr>
+                    <th>CODE</th>
+                    <th>NAME</th>
+                    <th>TYPE</th>
+                </tr>
+                <tr th:each="option : ${options}">
+                    <td th:text="${option.code}"></td>
+                    <td th:text="${option.name}"></td>
+                    <td th:text="${option.type}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

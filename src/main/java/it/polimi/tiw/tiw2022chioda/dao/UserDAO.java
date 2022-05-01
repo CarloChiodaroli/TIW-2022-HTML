@@ -45,7 +45,9 @@ public class UserDAO extends DAO {
             System.err.println("Couldn't execute Query");
             throw e;
         }
-        return !result.isBeforeFirst();
+        System.out.println(result.isAfterLast());
+        System.out.println(!result.isBeforeFirst());
+        return result.isBeforeFirst();
     }
 
     public User checkCredentials(String username, String password) throws SQLException {

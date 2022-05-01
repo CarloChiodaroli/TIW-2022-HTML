@@ -39,16 +39,16 @@
     <filter-mapping>
         <filter-name>LoginChecker</filter-name>
         <url-pattern>/GoToHome</url-pattern>
-        <url-pattern>/GetOptions</url-pattern>
-        <url-pattern>/PriceEstimate</url-pattern>
+        <url-pattern>/GoToClientHome</url-pattern>
+        <url-pattern>/GoToEmployeeHome</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ClientChecker</filter-name>
-        <url-pattern>/GetOptions</url-pattern>
+        <url-pattern>/GoToClientHome</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>EmployeeChecker</filter-name>
-        <url-pattern>/PriceEstimate</url-pattern>
+        <url-pattern>/GoToEmployeeHome</url-pattern>
     </filter-mapping>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
