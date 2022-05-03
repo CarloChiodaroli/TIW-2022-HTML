@@ -1,9 +1,6 @@
 package it.polimi.tiw.tiw2022chioda.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +30,7 @@ public class DecorDAO extends DAO {
         String query = "INSERT INTO DECOR (ESTIMATE, OPT) " +
                 "VALUES (?, ?) ";
         for (Integer optionCode : optionCodes) {
-            PreparedStatement preparedStatement = super.prepareQuery(query);
+            PreparedStatement preparedStatement = super.prepareQuery(query, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setInt(1, estimateCode);
             preparedStatement.setInt(2, optionCode);
             preparedStatement.executeUpdate();

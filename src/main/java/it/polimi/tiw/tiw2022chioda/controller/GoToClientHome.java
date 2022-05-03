@@ -14,9 +14,12 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
@@ -34,7 +37,7 @@ public class GoToClientHome extends GoToHome {
     private TemplateEngine templateEngine;
     private Connection connection = null;
 
-    public void init() throws ServletException{
+    public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
         ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
         templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -57,14 +60,14 @@ public class GoToClientHome extends GoToHome {
         List<Option> optionsOfProduct = new ArrayList<>();
         String chosenProduct = request.getParameter("productCode");
         int productCode = -1;
-        if(chosenProduct != null){
+        if (chosenProduct != null) {
             productCode = Integer.parseInt(chosenProduct);
             try {
                 List<Integer> optionCodes = availabilityDAO.getFromProduct(productCode);
-                for(Integer optionCode: optionCodes){
+                for (Integer optionCode : optionCodes) {
                     optionsOfProduct.add(optionDAO.getFromCode(optionCode));
                 }
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering options");
                 return;
             }

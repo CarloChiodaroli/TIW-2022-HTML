@@ -1,16 +1,9 @@
 package it.polimi.tiw.tiw2022chioda.controller;
 
-import it.polimi.tiw.tiw2022chioda.bean.Estimate;
-import it.polimi.tiw.tiw2022chioda.bean.Option;
-import it.polimi.tiw.tiw2022chioda.bean.Product;
 import it.polimi.tiw.tiw2022chioda.bean.User;
-import it.polimi.tiw.tiw2022chioda.dao.AvailabilityDAO;
-import it.polimi.tiw.tiw2022chioda.dao.EstimateDAO;
-import it.polimi.tiw.tiw2022chioda.dao.OptionDAO;
-import it.polimi.tiw.tiw2022chioda.dao.ProductDAO;
+import it.polimi.tiw.tiw2022chioda.enums.UserType;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
@@ -25,8 +18,8 @@ import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet(name = "GoToHome", value = "/GoToHome")
 public class GoToHome extends HttpServlet {
@@ -60,16 +53,17 @@ public class GoToHome extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        switch (user.getUserType()) {
-            case EMPLOYEE -> response.sendRedirect(session.getServletContext().getContextPath() + employeeHomePageServlet);
-            case CLIENT -> response.sendRedirect(session.getServletContext().getContextPath() + clientHomePageServlet);
-            default -> {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().println("User does have not a home page");
-                session.invalidate();
-                String path = getServletContext().getContextPath() + "/index.html";
-                response.sendRedirect(path);
-            }
+        Map<UserType, String> servlets = new HashMap<>();
+        servlets.put(UserType.CLIENT, clientHomePageServlet);
+        servlets.put(UserType.EMPLOYEE, employeeHomePageServlet);
+        if (servlets.containsKey(user.getUserType())) {
+            response.sendRedirect(session.getServletContext().getContextPath() + servlets.get(user.getUserType()));
+        } else {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("User does have not a home page");
+            session.invalidate();
+            String path = getServletContext().getContextPath() + "/index.html";
+            response.sendRedirect(path);
         }
     }
 

@@ -3,7 +3,6 @@ package it.polimi.tiw.tiw2022chioda.controller;
 import it.polimi.tiw.tiw2022chioda.bean.User;
 import it.polimi.tiw.tiw2022chioda.dao.UserDAO;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
-import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import javax.servlet.ServletException;
@@ -16,13 +15,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.regex.Pattern;
 
-@WebServlet(name = "CheckSignIn", value = "/CheckSignIn")
-public class CheckSignIn extends HttpServlet {
+@WebServlet(name = "CheckSignUp", value = "/CheckSignUp")
+public class CheckSignUp extends HttpServlet {
 
     private Connection connection;
 
     public void init() throws ServletException {
-        System.out.println("CheckSignIn initialization");
+        System.out.println("CheckSignUp initialization");
         connection = ConnectionHandler.getConnection(getServletContext());
     }
 
@@ -62,12 +61,12 @@ public class CheckSignIn extends HttpServlet {
             response.getWriter().println("Credentials must be not empty");
             return;
         }
-        if(!password.equals(repeatedPassword)){
+        if (!password.equals(repeatedPassword)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("Passwords do not coincide");
             return;
         }
-        if(!isEMail(eMail)){
+        if (!isEMail(eMail)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("Given e-mail is not a valid e-mail address");
             return;
@@ -79,7 +78,7 @@ public class CheckSignIn extends HttpServlet {
                 response.getWriter().println("Username already used");
                 return;
             }
-        } catch(SQLException e){
+        } catch (SQLException e) {
             response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while querying database: " + e.getMessage());
             return;
         }
@@ -103,7 +102,7 @@ public class CheckSignIn extends HttpServlet {
         response.sendRedirect(path);
     }
 
-    private boolean isEMail(String EMail){
+    private boolean isEMail(String EMail) {
         return Pattern.matches("([a-zA-Z0-9.])+@(\\w+\\.)+\\w+", EMail);
     }
 }

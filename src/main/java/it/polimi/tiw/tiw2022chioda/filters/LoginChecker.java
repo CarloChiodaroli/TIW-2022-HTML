@@ -1,8 +1,5 @@
 package it.polimi.tiw.tiw2022chioda.filters;
 
-import it.polimi.tiw.tiw2022chioda.bean.User;
-import it.polimi.tiw.tiw2022chioda.enums.UserType;
-
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +16,7 @@ public class LoginChecker implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String loginPath = httpServletRequest.getServletContext().getContextPath() + "/index.html";
         HttpSession session = httpServletRequest.getSession();
-        if(session.isNew() || session.getAttribute("user") == null){
+        if (session.isNew() || session.getAttribute("user") == null) {
             System.err.println("There is no Login");
             httpServletResponse.sendRedirect(loginPath);
             return;

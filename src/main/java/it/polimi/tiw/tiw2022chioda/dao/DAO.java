@@ -28,6 +28,17 @@ public abstract class DAO {
         return preparedStatement;
     }
 
+    protected PreparedStatement prepareQuery(String sql, int statement) throws SQLException {
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = connection.prepareStatement(sql, statement);
+        } catch (SQLException e) {
+            System.err.println("Couldn't precompile SQL statement");
+            throw e;
+        }
+        return preparedStatement;
+    }
+
     protected ResultSet coreQueryExecutor(PreparedStatement preparedStatement) throws SQLException {
         ResultSet result;
         try {

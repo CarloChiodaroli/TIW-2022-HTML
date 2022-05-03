@@ -42,18 +42,14 @@
                 </tr>
             </table>
             <span>Choose one product to asking for an estimate: </span>
-            <table>
-                <tr th:each="product : ${products}">
-                    <td>
-                        <a th:text="${product.name}" th:href="'GoToClientHome?productCode=' + ${product.code}"></a>
-                    </td>
-                </tr>
-            </table>
+            <div>
+                <div th:each="product: ${products}">
+                    <a th:text="${product.name}" th:href="'GoToClientHome?productCode=' + ${product.code}"></a>
+                </div>
+            </div>
         </div>
         <div th:unless="${actualProductCode == -1}">
-            hallo
             <span th:text="'Chosen Product Code: ' + ${actualProductCode}"></span><br>
-            hallo
             <span>Available options</span>
             <table>
                 <tr>
@@ -67,6 +63,14 @@
                     <td th:text="${option.type}"></td>
                 </tr>
             </table>
+            <form action="CreateEstimate" method="POST">
+                <span>Choose one of the sequent ones: </span>
+                <select name="optionCode" id="optionId">
+                    <option th:each="option : ${options}" th:value="${option.code}" th:text="${option.name}"></option>
+                </select>
+                <input type="hidden" name="productCode" id="productCode" th:value="${actualProductCode}"><br>
+                <input type="submit" name="Submit">
+            </form>
         </div>
     </div>
 </body>

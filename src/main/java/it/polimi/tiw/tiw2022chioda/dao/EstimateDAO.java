@@ -5,10 +5,7 @@ import it.polimi.tiw.tiw2022chioda.bean.User;
 import it.polimi.tiw.tiw2022chioda.enums.UserType;
 import it.polimi.tiw.tiw2022chioda.exception.WrongUserTypeException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -112,7 +109,7 @@ public class EstimateDAO extends DAO {
         super.getConnection().setAutoCommit(false);
         String queryEstimate = "INSERT INTO ESTIMATE (CLIENT, PRODUCT)" +
                 "VALUES (?,?)";
-        PreparedStatement preparedStatement = super.prepareQuery(queryEstimate);
+        PreparedStatement preparedStatement = super.prepareQuery(queryEstimate, Statement.RETURN_GENERATED_KEYS);
         preparedStatement.setInt(1, client.getID());
         preparedStatement.setInt(2, candidate.getProductCode());
         preparedStatement.executeUpdate();

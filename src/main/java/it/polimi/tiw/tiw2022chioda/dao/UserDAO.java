@@ -2,10 +2,7 @@ package it.polimi.tiw.tiw2022chioda.dao;
 
 import it.polimi.tiw.tiw2022chioda.bean.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class UserDAO extends DAO {
 
@@ -17,7 +14,7 @@ public class UserDAO extends DAO {
             throws SQLException {
         String query = "INSERT INTO USER (username, email, usertype, password)" +
                 "VALUES (?, ?, ?, ?)";
-        PreparedStatement preparedStatement = super.prepareQuery(query);
+        PreparedStatement preparedStatement = super.prepareQuery(query, Statement.RETURN_GENERATED_KEYS);
         preparedStatement.setString(1, candidate.getUsername());
         preparedStatement.setString(2, candidate.getEmail());
         preparedStatement.setString(3, candidate.getUserTypeAsString());
@@ -45,8 +42,6 @@ public class UserDAO extends DAO {
             System.err.println("Couldn't execute Query");
             throw e;
         }
-        System.out.println(result.isAfterLast());
-        System.out.println(!result.isBeforeFirst());
         return result.isBeforeFirst();
     }
 
@@ -71,7 +66,7 @@ public class UserDAO extends DAO {
 
     private User coreUserGetter(PreparedStatement preparedStatement) throws SQLException {
         ResultSet result = super.coreQueryExecutor(preparedStatement);
-        if(result == null){
+        if (result == null) {
             return null;
         }
         result.next();
