@@ -45,7 +45,7 @@ public class Estimate {
     }
 
     public void setClient(User client) throws WrongUserTypeException {
-        if(UserType.CLIENT.equals(client.getUserType()))
+        if(!UserType.CLIENT.equals(client.getUserType()))
             throw new WrongUserTypeException(UserType.CLIENT, client.getUserType());
         this.client = client.getID();
     }

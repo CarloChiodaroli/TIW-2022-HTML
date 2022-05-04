@@ -35,7 +35,7 @@ public class DecorDAO extends DAO {
             preparedStatement.setInt(2, optionCode);
             preparedStatement.executeUpdate();
             ResultSet result = preparedStatement.getGeneratedKeys();
-            if (!result.next()) {
+            if (result.next()) {
                 String error = "Could not register " + optionCode + " option";
                 System.err.println(error);
                 throw new SQLException(error);

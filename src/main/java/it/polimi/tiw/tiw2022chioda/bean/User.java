@@ -11,6 +11,13 @@ public class User {
     private String username;
     private UserType userType;
 
+    public User(){
+        ID = 0;
+        email = null;
+        username = null;
+        userType = null;
+    }
+
     public int getID() {
         return ID;
     }

@@ -67,9 +67,8 @@ public class EstimateDAO extends DAO {
 
     private List<Estimate> coreEstimateListSetter(ResultSet result) throws SQLException {
         List<Estimate> estimateList = new ArrayList<>();
-        while (result.isAfterLast()) {
+        while (result.next()) {
             estimateList.add(coreEstimateSetter(result));
-            result.next();
         }
         return estimateList;
     }
@@ -116,7 +115,14 @@ public class EstimateDAO extends DAO {
         ResultSet result = preparedStatement.getGeneratedKeys();
         if (result.next()) {
             candidate.setCode(result.getInt(1));
-            registerOptions(candidate);
+            try {
+                registerOptions(candidate);
+            } catch (SQLException e){
+                System.err.println("Option addition failed, asked Database Rollback");
+                super.getConnection().rollback();
+                System.err.println("Rollback done");
+                throw e;
+            }
             try {
                 super.getConnection().commit();
             } catch (SQLException e) {

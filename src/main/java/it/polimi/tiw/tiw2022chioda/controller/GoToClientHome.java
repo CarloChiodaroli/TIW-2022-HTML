@@ -25,7 +25,9 @@ import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "GoToClientHome", value = "/GoToClientHome")
 public class GoToClientHome extends GoToHome {
@@ -55,10 +57,12 @@ public class GoToClientHome extends GoToHome {
         AvailabilityDAO availabilityDAO = new AvailabilityDAO(connection);
         OptionDAO optionDAO = new OptionDAO(connection);
         User user = (User) session.getAttribute("user");
+
         List<Estimate> userEstimates = getUserEstimates(estimateDAO, user, response);
         List<Product> products = getAllProducts(productDAO, response);
         List<Option> optionsOfProduct = new ArrayList<>();
         String chosenProduct = request.getParameter("productCode");
+        String errorCode = request.getParameter("error");
         int productCode = -1;
         if (chosenProduct != null) {
             productCode = Integer.parseInt(chosenProduct);
@@ -72,12 +76,26 @@ public class GoToClientHome extends GoToHome {
                 return;
             }
         }
+        int error = -1;
+        if (errorCode != null) {
+            error = Integer.parseInt(errorCode);
+            try {
+                List<Integer> optionCodes = availabilityDAO.getFromProduct(productCode);
+                for (Integer optionCode : optionCodes) {
+                    optionsOfProduct.add(optionDAO.getFromCode(optionCode));
+                }
+            } catch (SQLException e) {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering options");
+                return;
+            }
+        }
+
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
         ctx.setVariable("estimates", userEstimates);
         ctx.setVariable("products", products);
-        System.out.println(optionsOfProduct);
         ctx.setVariable("actualProductCode", productCode);
+        ctx.setVariable("error", error);
         ctx.setVariable("options", optionsOfProduct);
         ctx.setVariable("user", user.getUsername());
         templateEngine.process(clientHomePagePath, ctx, response.getWriter());
@@ -92,6 +110,7 @@ public class GoToClientHome extends GoToHome {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering estimates");
             return new ArrayList<>();
         }
+        System.out.println(userEstimates);
         return userEstimates;
     }
 
