@@ -5,36 +5,12 @@
     <title>Product Detail - EM</title>
 </head>
 <body>
+    <div th:insert="/WEB-INF/templates/header (${session.user})"></div>
     <span>Estimate detail page</span><br>
     <div>
-        <span><a href="GoToHome">Go to Home</a></span>
+        <div th:replace="~{/WEB-INF/templates/estimateDetail.html :: fragment}"
+             th:with="estimate=${estimate}, product=${product}, options=${options}, client=${client}, priced=${priced}"></div>
     </div>
-    <div>
-        <div th:fragment="estimateDetail (estimate, product, options, client, priced)">
-            <span th:text="'Estimate code: ' + ${estimate.code}"></span>
-            <div>
-                <span th:text="'Product code: ' + ${product.code}"></span><br>
-                <span th:text="'Product image: ' + ${product.image}"></span><br>
-                <span th:text="'Product name: ' + ${product.name}"></span><br>
-            </div>
-            <div th:each="option : ${options}">
-                <div>
-                    <span th:text="'Option code: ' + ${option.code}"></span><br>
-                    <span th:text="'Option name: ' + ${option.name}"></span><br>
-                    <span th:text="'Option type: ' + ${option.type}"></span><br>
-                </div>
-            </div>
-            <div>
-                <span th:text="'Client username: ' + ${client.username}"></span>
-                <div th:if="${priced}">
-                    <span th:text="'Employee username: ' + ${employee.username}"></span><br>
-                    <span th:text="'Priced at: ' + ${estimate.getPrice()}"></span>
-                </div>
-                <div th:unless="${priced}">
-                    <span>This estimate has not been priced yet</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div th:insert="/WEB-INF/templates/footer"></div>
 </body>
 </html>

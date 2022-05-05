@@ -49,7 +49,7 @@ public class PriceEstimate extends HttpServlet {
             return;
         }
 
-        if (Integer.parseInt(price) < 0){
+        if (Double.parseDouble(price) < 0){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("Price cannot be negative");
             return;
@@ -79,7 +79,7 @@ public class PriceEstimate extends HttpServlet {
         }
 
         try{
-            estimateDAO.priceEstimate(estimate, employee, Integer.parseInt(price));
+            estimateDAO.priceEstimate(estimate, employee, Double.parseDouble(price));
         } catch(SQLException e){
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while getting data from database 3");
             return;

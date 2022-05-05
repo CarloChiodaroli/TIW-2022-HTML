@@ -5,29 +5,10 @@
     <title>Employee Home Page - EM</title>
 </head>
 <body>
-    <span th:text="'Welcome Employee ' + ${session.user.username}">Welcome Employee</span>
-    <span><a href="Logout">Logout</a></span>
-    <div th:unless="${notPricedEstimates.isEmpty()}">
-        <span>Not priced Estimates</span>
-        <div th:each="notPricedEstimate : ${notPricedEstimates}">
-            <span th:text="${notPricedEstimate.code}"></span>
-            <span th:text="${notPricedEstimate.clientId}"></span>
-            <td><a th:href="'EstimateDetail?estimateCode=' + ${notPricedEstimate.code}">See details</a></td>
-        </div>
-    </div>
-    <div th:if="${notPricedEstimates.isEmpty()}">
-        No estimates found;
-    </div>
-    <div th:unless="${pricedEstimates.isEmpty()}">
-        <span>Priced Estimates</span>
-        <div th:each="pricedEstimate : ${pricedEstimates}">
-            <span th:text="${pricedEstimate.code}"></span>
-            <span th:text="${pricedEstimate.clientId}"></span>
-            <td><a th:href="'EstimateDetail?estimateCode=' + ${pricedEstimate.code}">See details</a></td>
-        </div>
-    </div>
-    <div th:if="${pricedEstimates.isEmpty()}">
-        You have not priced any estimate yet
-    </div>
+    <div th:insert="/WEB-INF/templates/header (${session.user})"></div>
+    <span>Employee Home Page</span><br>
+    <div th:insert="~{/WEB-INF/templates/estimateTable (${notPricedEstimates}, ${products}, ${'Not Priced estimates'})}" ></div>
+    <div th:insert="~{/WEB-INF/templates/estimateTable (${pricedEstimates}, ${products}, ${'Priced estimates'})}" ></div>
+    <div th:insert="/WEB-INF/templates/footer"></div>
 </body>
 </html>

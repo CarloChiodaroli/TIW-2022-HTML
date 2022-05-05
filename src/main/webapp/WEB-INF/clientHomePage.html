@@ -5,7 +5,8 @@
     <title>Client Home Page</title>
 </head>
 <body>
-    <span th:text="'Welcome Client ' + ${session.user.username}"></span>
+    <div th:insert="/WEB-INF/templates/header (${session.user})"></div>
+    <span>Client Home Page</span><br>
     <div>
         <div th:unless="${error == -1}">
             <div th:switch="${error}">
@@ -21,74 +22,8 @@
             </div>
         </div>
     </div>
-    <div>
-        <div th:unless="${estimates.isEmpty()}">
-            <span>Available Estimates</span>
-            <table>
-                <tr>
-                    <th>CODE</th>
-                    <th>Product Name</th>
-                    <th>Employee ID</th>
-                    <th></th>
-                </tr>
-                <tr th:each="estimate : ${estimates}">
-                    <td th:text="${estimate.code}"></td>
-                    <td th:each="product : ${products}" th:if="${product.code == estimate.productCode}" th:text="${product.name}"></td>
-                    <td th:if="${estimate.price > 0}" th:text="${estimate.employeeId}"></td>
-                    <td th:unless="${estimate.price > 0}">Not priced yet</td>
-                    <td><a th:href="'EstimateDetail?estimateCode=' + ${estimate.code}">See details</a></td>
-                </tr>
-            </table>
-        </div>
-        <div th:if="${estimates.isEmpty()}">
-            No estimates found
-        </div>
-    </div>
-    <div>
-        <div th:if="${actualProductCode == -1}">
-            <span>Available products</span>
-            <table>
-                <tr>
-                    <th>CODE</th>
-                    <th>NAME</th>
-                    <th>IMAGE</th>
-                </tr>
-                <tr th:each="product : ${products}">
-                    <td th:text="${product.code}"></td>
-                    <td th:text="${product.name}"></td>
-                    <td th:text="${product.image}"></td>
-                </tr>
-            </table>
-            <span>Choose one product to asking for an estimate: </span>
-            <div>
-                <div th:each="product: ${products}">
-                    <a th:text="${product.name}" th:href="'GoToClientHome?productCode=' + ${product.code}"></a>
-                </div>
-            </div>
-        </div>
-        <div th:unless="${actualProductCode == -1}">
-            <span th:text="'Chosen Product Code: ' + ${actualProductCode}"></span><br>
-            <span>Available options</span>
-            <table>
-                <tr>
-                    <th>CODE</th>
-                    <th>NAME</th>
-                    <th>TYPE</th>
-                </tr>
-                <tr th:each="option : ${options}">
-                    <td th:text="${option.code}"></td>
-                    <td th:text="${option.name}"></td>
-                    <td th:text="${option.type}"></td>
-                </tr>
-            </table>
-            <form action="CreateEstimate" method="POST">
-                <span>Choose one of the sequent ones: </span><br>
-                <input type="checkbox" name="optionCode"
-                       th:each="option : ${options}" th:value="${option.code}" th:text="${option.name}"><br>
-                <input type="hidden" name="productCode" th:value="${actualProductCode}"><br>
-                <input type="submit" name="Submit">
-            </form>
-        </div>
-    </div>
+    <div th:insert="~{/WEB-INF/templates/estimateTable (${estimates}, ${products}, ${'My Estimates'})}" ></div>
+    <div th:replace="/WEB-INF/templates/newEstimateForm (${products}, ${options}, ${actualProductCode})"></div>
+    <div th:insert="/WEB-INF/templates/footer"></div>
 </body>
 </html>

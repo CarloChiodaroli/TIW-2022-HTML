@@ -1,0 +1,27 @@
+<div th:fragment="fragment (products, options, actualProductCode)">
+    <div th:if="${actualProductCode == -1}">
+        <span>Choose a product to make an estimate</span>
+        <div th:each="product : ${products}">
+            <span th:text="${product.code}"></span>
+            <span th:text="${product.name}"></span>
+            <span th:text="${product.image}"></span>
+            <span><a th:href="'GoToClientHome?productCode=' + ${product.code}">Create Estimate</a></span>
+        </div>
+    </div>
+    <div th:unless="${actualProductCode == -1}">
+        <span th:text="'Chosen Product Code: ' + ${actualProductCode}"></span><br>
+        <span>Available options</span>
+        <div th:each="option : ${options}">
+            <span th:text="${option.code}"></span>
+            <span th:text="${option.name}"></span>
+            <span th:text="${option.type}"></span>
+        </div>
+        <form action="CreateEstimate" method="POST">
+            <span>Choose one of the sequent ones: </span><br>
+            <input type="checkbox" name="optionCode"
+                   th:each="option : ${options}" th:value="${option.code}" th:text="${option.name}"><br>
+            <input type="hidden" name="productCode" th:value="${actualProductCode}"><br>
+            <input type="submit" name="Submit">
+        </form>
+    </div>
+</div>

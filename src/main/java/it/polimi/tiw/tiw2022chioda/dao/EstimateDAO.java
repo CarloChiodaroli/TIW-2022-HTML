@@ -89,7 +89,7 @@ public class EstimateDAO extends DAO {
             throw new WrongUserTypeException(user.getUserType(), UserType.CLIENT);
     }
 
-    public void priceEstimate(Estimate estimate, User employee, int price)
+    public void priceEstimate(Estimate estimate, User employee, double price)
             throws WrongUserTypeException, SQLException {
         controlEmployee(employee);
         String query = "UPDATE ESTIMATE " +
@@ -97,7 +97,7 @@ public class EstimateDAO extends DAO {
                 "WHERE CODE = ? ";
         PreparedStatement preparedStatement = super.prepareQuery(query);
         preparedStatement.setInt(1, employee.getID());
-        preparedStatement.setInt(2, price);
+        preparedStatement.setDouble(2, price);
         preparedStatement.setInt(3, estimate.getCode());
         preparedStatement.executeUpdate();
     }

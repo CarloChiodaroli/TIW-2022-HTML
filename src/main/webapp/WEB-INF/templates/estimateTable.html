@@ -1,0 +1,15 @@
+<div th:fragment="fragment (estimates, products, header)">
+    <div th:unless="${estimates.isEmpty()}">
+        <span th:text="${header}"></span>
+        <div th:each="estimate : ${estimates}">
+            <span th:text="${estimate.code}"></span>
+            <span th:each="product : ${products}" th:if="${product.code == estimate.productCode}" th:text="${product.name}"></span>
+            <span th:if="${estimate.price > 0}" th:text="'Price: ' + ${estimate.price}"></span>
+            <span th:unless="${estimate.price > 0}">Not priced</span>
+            <td><a th:href="'EstimateDetail?estimateCode=' + ${estimate.code}">See details</a></td>
+        </div>
+    </div>
+    <div th:if="${estimates.isEmpty()}">
+        No estimates found;
+    </div>
+</div>
