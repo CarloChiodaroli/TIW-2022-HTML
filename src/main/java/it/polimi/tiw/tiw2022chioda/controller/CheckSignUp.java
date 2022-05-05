@@ -94,7 +94,7 @@ public class CheckSignUp extends HttpServlet {
         }
         String path = getServletContext().getContextPath();
         if (user == null) {
-            path = path + "/index.html";
+            path = path + "/loginPage.html";
         } else {
             request.getSession().setAttribute("user", user);
             path = path + "/GoToHome";

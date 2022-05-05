@@ -1,0 +1,62 @@
+:root {
+    --background-lev0: #101010;
+    --background-lev1: #202020;
+    --background-lev2: #303030;
+    --background-lev3: #404040;
+    --text: white;
+    --colored-text: #EE6C4D;
+    --heder-hover-background: #834100;
+    --accent-color: #EE6C4D;
+    --little-radius: .3rem;
+    --little-padding: .3rem;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    font-family: 'Monda', sans-serif;
+    font-weight: normal;
+    color: var(--text);
+}
+
+body {
+    place-items: center;
+    min-width: auto;
+    background-color: var(--background-lev1);
+    margin: 0;
+}
+
+div {
+    text-align: center;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+.main-body {
+    min-width: fit-content;
+    width: fit-content;
+    padding: 2rem 3rem;
+    display: flex;
+    gap: 1em;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--background-lev2);
+    border-radius: var(--little-radius);
+    margin: 5rem auto;
+}
+
+.main-title {
+    font-size: 2.5rem;
+}
+
+.my-button {
+    font-size: 1rem;
+    padding: 1rem;
+    width: 15rem;
+    background-color: var(--accent-color);
+    border-radius: var(--little-radius);
+    border: none;
+    outline: .1rem solid black;
+}
+

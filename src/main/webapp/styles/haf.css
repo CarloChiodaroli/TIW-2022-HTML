@@ -1,0 +1,51 @@
+.em-header {
+    top: 0;
+}
+
+.em-header > span {
+    text-align: left;
+}
+
+.em-footer {
+    bottom: 0;
+}
+
+.bar {
+    width: 100%;
+    position: fixed;
+    height: fit-content;
+    background-color: var(--background-lev0);
+    display: grid;
+    grid-template-rows: auto;
+    grid-auto-flow: column;
+}
+
+.bar > span {
+    padding: 1rem;
+    color: white;
+}
+
+.bar > div {
+    width: fit-content;
+    justify-self: end;
+    margin:auto 0;
+}
+
+.bar > div > a {
+    width: fit-content;
+    height: max-content;
+    border: none;
+    padding: 1rem;
+    color: white;
+    border-radius: var(--little-radius);
+}
+
+.home-button:hover {
+    background-color: green;
+    color: black;
+}
+
+.logout-button:hover {
+    background-color: darkred;
+    color: black;
+}

@@ -2,18 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login Page - EM</title>
+    <title>Benvenuto</title>
+    <link rel="stylesheet" type="text/css" media="all" href="styles/common.css"/>
 </head>
 <body>
-<h1>Welcome to the Estimate Management website</h1>
-<form action="CheckLogin" method="POST">
-    Username: <input type="text" name="username" required><br>
-    Password: <input type="password" name="password" required><br>
-    <input type="submit" value="login">
-    <p th:text="${errorMsg}"></p>
-</form>
-<form action="registerPage.html">
-    <input type="submit" value="Register">
-</form>
+    <div class="main-body">
+        <span class="main-title">Welcome in Estimate Management</span><br>
+        <a href="Login" class="my-button">Login</a>
+        <a href="SignUp" class="my-button">Sign Up</a>
+    </div>
 </body>
 </html>

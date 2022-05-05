@@ -1,5 +1,7 @@
-<div th:fragment="fragment (user)">
-    <span th:text="'Welcome Employee ' + ${user.username}"></span>
-    <span><a href="Logout">Logout</a></span>
-    <span><a href="GoToHome">Go To Home</a></span>
+<div class="em-header bar" th:fragment="fragment (user)">
+    <span th:text="'Welcome ' + ${user.username}"></span>
+    <div>
+        <a class="home-button" href="GoToHome">Home</a>
+        <a class="logout-button" href="Logout">Logout</a>
+    </div>
 </div>

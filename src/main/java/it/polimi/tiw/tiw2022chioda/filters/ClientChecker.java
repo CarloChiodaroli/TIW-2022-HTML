@@ -16,7 +16,7 @@ public class ClientChecker implements Filter {
         System.out.println("Client filter executing");
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        String loginPath = httpServletRequest.getServletContext().getContextPath() + "/index.html";
+        String loginPath = httpServletRequest.getServletContext().getContextPath() + "/loginPage.html";
         HttpSession session = httpServletRequest.getSession();
         User user;
         user = (User) session.getAttribute("user");

@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Product Detail - EM</title>
+    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/common.css'"/>
+    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/haf.css'"/>
 </head>
 <body>
     <div th:insert="/WEB-INF/templates/header (${session.user})"></div>
-    <span>Estimate detail page</span><br>
-    <div>
+    <div class="main-body">
+        <span class="main-title">Estimate detail page</span><br>
         <div th:replace="~{/WEB-INF/templates/estimateDetail.html :: fragment}"
              th:with="estimate=${estimate}, product=${product}, options=${options}, client=${client}, priced=${priced}"></div>
     </div>

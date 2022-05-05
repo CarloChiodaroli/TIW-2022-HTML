@@ -62,7 +62,7 @@ public class GoToHome extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("User does have not a home page");
             session.invalidate();
-            String path = getServletContext().getContextPath() + "/index.html";
+            String path = getServletContext().getContextPath() + "/loginPage.html";
             response.sendRedirect(path);
         }
     }

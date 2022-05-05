@@ -14,7 +14,7 @@ public class LoginChecker implements Filter {
         System.out.println("Checking Login");
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        String loginPath = httpServletRequest.getServletContext().getContextPath() + "/index.html";
+        String loginPath = httpServletRequest.getServletContext().getContextPath() + "/loginPage.html";
         HttpSession session = httpServletRequest.getSession();
         if (session.isNew() || session.getAttribute("user") == null) {
             System.err.println("There is no Login");

@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Client Home Page</title>
+    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/common.css'"/>
+    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/haf.css'"/>
 </head>
 <body>
     <div th:insert="/WEB-INF/templates/header (${session.user})"></div>
-    <span>Client Home Page</span><br>
-    <div>
+    <div class="main-body">
+        <span class="main-title">Client Home Page</span>
         <div th:unless="${error == -1}">
             <div th:switch="${error}">
                 <div th:case="0">
@@ -21,9 +23,9 @@
                 </div>
             </div>
         </div>
+        <div th:replace="/WEB-INF/templates/newEstimateForm (${products}, ${options}, ${actualProductCode})"></div>
+        <div th:insert="~{/WEB-INF/templates/estimateTable (${estimates}, ${products}, ${'My past estimates'})}" ></div>
     </div>
-    <div th:insert="~{/WEB-INF/templates/estimateTable (${estimates}, ${products}, ${'My Estimates'})}" ></div>
-    <div th:replace="/WEB-INF/templates/newEstimateForm (${products}, ${options}, ${actualProductCode})"></div>
     <div th:insert="/WEB-INF/templates/footer"></div>
 </body>
 </html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Page - EM</title>
+    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/common.css'"/>
+    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/forms.css'"/>
+</head>
+<body>
+    <div class="main-body">
+        <span class="main-title">User Sign Up page</span>
+        <form action="CheckSignUp" method="POST">
+            <div class="form-content">
+                <label>
+                    <span>Username</span>
+                    <input type="text" name="username" required>
+                </label>
+                <label>
+                    <span>E-Mail</span>
+                    <input type="text" name="email" required>
+                </label>
+                <label>
+                    <span>Password</span>
+                    <input type="password" name="password" required>
+                </label>
+                <label>
+                    <span>Repeat Password</span>
+                    <input type="password" name="rep-password" required>
+                </label>
+                <label>
+                    <span>userType</span>
+                    <select name="usertype">
+                        <option value="EMPLOYEE">Employee</option>
+                        <option value="CLIENT">Client</option>
+                    </select>
+                </label>
+                <input class="my-button submit-button" type="submit" value="Register">
+            </div>
+        </form>
+        <a class="my-button" href="Login">Login</a>
+    </div>
+</body>
+</html>

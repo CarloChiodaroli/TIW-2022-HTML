@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Employee Home Page - EM</title>
+    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/common.css'"/>
+    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/haf.css'"/>
+
 </head>
 <body>
     <div th:insert="/WEB-INF/templates/header (${session.user})"></div>
-    <span>Employee Home Page</span><br>
-    <div th:insert="~{/WEB-INF/templates/estimateTable (${notPricedEstimates}, ${products}, ${'Not Priced estimates'})}" ></div>
-    <div th:insert="~{/WEB-INF/templates/estimateTable (${pricedEstimates}, ${products}, ${'Priced estimates'})}" ></div>
+    <div class="main-body">
+        <span class="main-title">Employee Home Page</span>
+        <div th:insert="~{/WEB-INF/templates/estimateTable (${notPricedEstimates}, ${products}, ${'Not Priced estimates'})}" ></div>
+        <div th:insert="~{/WEB-INF/templates/estimateTable (${pricedEstimates}, ${products}, ${'Priced estimates'})}" ></div>
+    </div>
     <div th:insert="/WEB-INF/templates/footer"></div>
 </body>
 </html>
