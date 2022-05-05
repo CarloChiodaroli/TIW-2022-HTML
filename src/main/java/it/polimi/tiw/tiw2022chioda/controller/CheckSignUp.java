@@ -103,6 +103,6 @@ public class CheckSignUp extends HttpServlet {
     }
 
     private boolean isEMail(String EMail) {
-        return Pattern.matches("([a-zA-Z0-9.])+@(\\w+\\.)+\\w+", EMail);
+        return Pattern.matches("^[a-zA-Z0-9+_.]+@[a-zA-Z0-9.-]+$", EMail);
     }
 }

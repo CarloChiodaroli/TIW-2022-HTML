@@ -41,14 +41,19 @@
         <url-pattern>/GoToHome</url-pattern>
         <url-pattern>/GoToClientHome</url-pattern>
         <url-pattern>/GoToEmployeeHome</url-pattern>
+        <url-pattern>/EstimateDetail</url-pattern>
+        <url-pattern>/CreateEstimate</url-pattern>
+        <url-pattern>/PriceEstimate</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ClientChecker</filter-name>
         <url-pattern>/GoToClientHome</url-pattern>
+        <url-pattern>/CreateEstimate</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>EmployeeChecker</filter-name>
         <url-pattern>/GoToEmployeeHome</url-pattern>
+        <url-pattern>/PriceEstimate</url-pattern>
     </filter-mapping>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>

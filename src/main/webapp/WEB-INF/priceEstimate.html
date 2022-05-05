@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Price Estimate - EM</title>
+</head>
+<body>
+    <span>Price Estimate page</span><br>
+    <div>
+        <span><a href="GoToHome">Go to Home</a></span>
+    </div>
+    <div>
+        <span th:text="'Estimate code: ' + ${estimate.code}"></span>
+        <div>
+            <span th:text="'Product code: ' + ${product.code}"></span><br>
+            <span th:text="'Product image: ' + ${product.image}"></span><br>
+            <span th:text="'Product name: ' + ${product.name}"></span><br>
+        </div>
+        <div th:each="option : ${options}">
+            <div>
+                <span th:text="'Option code: ' + ${option.code}"></span><br>
+                <span th:text="'Option name: ' + ${option.name}"></span><br>
+                <span th:text="'Option type: ' + ${option.type}"></span><br>
+            </div>
+        </div>
+        <div>
+            <span th:text="'Client username: ' + ${client.username}"></span>
+            <div th:if="${priced}">
+                <span th:text="'Employee username: ' + ${employee.username}"></span><br>
+                <span th:text="'Priced at: ' + ${estimate.getPrice()}"></span>
+            </div>
+            <div th:unless="${priced}">
+                <span>This estimate has not been priced yet</span>
+            </div>
+        </div>
+    </div>
+    <form action="PriceEstimate" method="POST">
+        Price: <input type="number" name="price" required><br>
+        <input type="hidden" name="employeeId" th:value="${session.user.ID}" required>
+        <input type="hidden" name="estimateCode" th:value="${estimate.code}" required>
+        <input type="submit" name="Price Estimate">
+    </form>
+</body>
+</html>

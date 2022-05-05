@@ -30,6 +30,7 @@ import java.util.List;
 public class EstimateDetail extends HttpServlet {
 
     private static final String productDetailPath = "WEB-INF/productDetail.html";
+    private static final String priceEstimatePath = "WEB-INF/priceEstimate.html";
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -138,7 +139,8 @@ public class EstimateDetail extends HttpServlet {
         ctx.setVariable("client", client);
         ctx.setVariable("priced", pricedEstimate);
         if(pricedEstimate) ctx.setVariable("employee", employee);
-        templateEngine.process(productDetailPath, ctx, response.getWriter());
+        if(priceEstimatePage) templateEngine.process(priceEstimatePath, ctx, response.getWriter());
+        else templateEngine.process(productDetailPath, ctx, response.getWriter());
     }
 
     @Override

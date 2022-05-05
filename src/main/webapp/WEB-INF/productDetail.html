@@ -10,28 +10,30 @@
         <span><a href="GoToHome">Go to Home</a></span>
     </div>
     <div>
-        <span th:text="'Estimate code: ' + ${estimate.code}"></span>
-        <div>
-            <span th:text="'Product code: ' + ${product.code}"></span><br>
-            <span th:text="'Product image: ' + ${product.image}"></span><br>
-            <span th:text="'Product name: ' + ${product.name}"></span><br>
-        </div>
-        <div th:each="option : ${options}">
+        <div th:fragment="estimateDetail (estimate, product, options, client, priced)">
+            <span th:text="'Estimate code: ' + ${estimate.code}"></span>
             <div>
-                <span th:text="'Option code: ' + ${option.code}"></span><br>
-                <span th:text="'Option name: ' + ${option.name}"></span><br>
-                <span th:text="'Option type: ' + ${option.type}"></span><br>
+                <span th:text="'Product code: ' + ${product.code}"></span><br>
+                <span th:text="'Product image: ' + ${product.image}"></span><br>
+                <span th:text="'Product name: ' + ${product.name}"></span><br>
             </div>
-        </div>
-        <div>
-            <span th:text="'Client username: ' + ${client.username}"></span>
-            <div th:if="${priced}">
-                <span th:text="'Employee username: ' + ${employee.username}"></span><br>
-                <span th:text="'Priced at: ' + ${estimate.getPrice()}"></span>
+            <div th:each="option : ${options}">
+                <div>
+                    <span th:text="'Option code: ' + ${option.code}"></span><br>
+                    <span th:text="'Option name: ' + ${option.name}"></span><br>
+                    <span th:text="'Option type: ' + ${option.type}"></span><br>
+                </div>
             </div>
-        </div>
-        <div th:if="${canPrice}">
-            Weeeellllll you could but I am implementing it so you can't... Sorry
+            <div>
+                <span th:text="'Client username: ' + ${client.username}"></span>
+                <div th:if="${priced}">
+                    <span th:text="'Employee username: ' + ${employee.username}"></span><br>
+                    <span th:text="'Priced at: ' + ${estimate.getPrice()}"></span>
+                </div>
+                <div th:unless="${priced}">
+                    <span>This estimate has not been priced yet</span>
+                </div>
+            </div>
         </div>
     </div>
 </body>
