@@ -5,25 +5,21 @@
     <title>Client Home Page</title>
     <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/common.css'"/>
     <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/haf.css'"/>
+    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/tables.css'"/>
+    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/clientHome.css'"/>
 </head>
 <body>
     <div th:insert="/WEB-INF/templates/header (${session.user})"></div>
     <div class="main-body">
         <span class="main-title">Client Home Page</span>
         <div th:unless="${error == -1}">
-            <div th:switch="${error}">
-                <div th:case="0">
-                    <span>Success</span>
-                </div>
-                <div th:case="1">
-                    <span>Internal Server Error: please retry</span>
-                </div>
-                <div th:case="2">
-                    <span>Received incorrect data</span>
-                </div>
+            <div th:class="'error' + ${error} + ' error'" th:switch="${error}">
+                <div th:case="0"><span>Success</span></div>
+                <div th:case="1"><span>Internal Server Error: please retry</span></div>
+                <div th:case="2"><span>Received incorrect data</span></div>
             </div>
         </div>
-        <div th:replace="/WEB-INF/templates/newEstimateForm (${products}, ${options}, ${actualProductCode})"></div>
+        <div th:replace="/WEB-INF/templates/newEstimateForm (${products}, ${options}, ${actualProductCode}, ${actualProduct})"></div>
         <div th:insert="~{/WEB-INF/templates/estimateTable (${estimates}, ${products}, ${'My past estimates'})}" ></div>
     </div>
     <div th:insert="/WEB-INF/templates/footer"></div>

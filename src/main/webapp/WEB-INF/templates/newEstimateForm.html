@@ -1,27 +1,45 @@
-<div th:fragment="fragment (products, options, actualProductCode)">
+<div class="em-table-container" th:fragment="fragment (products, options, actualProductCode, actualProduct)">
     <div th:if="${actualProductCode == -1}">
-        <span>Choose a product to make an estimate</span>
-        <div th:each="product : ${products}">
-            <span th:text="${product.code}"></span>
-            <span th:text="${product.name}"></span>
-            <span th:text="${product.image}"></span>
-            <span><a th:href="'GoToClientHome?productCode=' + ${product.code}">Create Estimate</a></span>
+        <div><span class="table-title">New estimate form</span></div>
+        <div><span>Choose a product to make an estimate</span></div>
+        <div class="product-list">
+            <a class="content" th:each="product : ${products}" th:href="'GoToClientHome?productCode=' + ${product.code}">
+                <img th:src="${#servletContext.contextPath} + '/images/dbImages/' + ${product.image}" th:alt="${product.name} + ' photo'">
+                <span th:text="${product.name}"></span>
+            </a>
         </div>
     </div>
     <div th:unless="${actualProductCode == -1}">
-        <span th:text="'Chosen Product Code: ' + ${actualProductCode}"></span><br>
-        <span>Available options</span>
-        <div th:each="option : ${options}">
-            <span th:text="${option.code}"></span>
-            <span th:text="${option.name}"></span>
-            <span th:text="${option.type}"></span>
-        </div>
         <form action="CreateEstimate" method="POST">
-            <span>Choose one of the sequent ones: </span><br>
-            <input type="checkbox" name="optionCode"
-                   th:each="option : ${options}" th:value="${option.code}" th:text="${option.name}"><br>
-            <input type="hidden" name="productCode" th:value="${actualProductCode}"><br>
-            <input type="submit" name="Submit">
+            <div class="em-table">
+                <span class="table-title">Available options for</span>
+                <div class="content no-hover">
+                    <img th:src="${#servletContext.contextPath} + '/images/dbImages/' + ${actualProduct.image}" th:alt="${actualProduct.name} + ' photo'">
+                    <span th:text="${actualProduct.name}"></span>
+                </div>
+                <span>Tik the checkbox on the side to choose at least one option</span>
+                <div class="content-row" th:each="option : ${options}">
+                    <div>
+                        <span th:text="${option.code}"></span>
+                        <span class="headers">Code</span>
+                    </div>
+                    <div>
+                        <span th:text="${option.name}"></span>
+                        <span class="headers">Name</span>
+                    </div>
+                    <div>
+                        <span th:text="${option.type}"></span>
+                        <span class="headers">Type</span>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="optionCode" th:value="${option.code}">
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="productCode" th:value="${actualProductCode}">
+            <div>
+                <input class="my-button" type="submit" name="Create Estimate">
+            </div>
         </form>
     </div>
 </div>

@@ -1,12 +1,23 @@
-<div th:fragment="fragment (estimates, products, header)">
-    <div th:unless="${estimates.isEmpty()}">
-        <span th:text="${header}"></span>
-        <div th:each="estimate : ${estimates}">
-            <span th:text="${estimate.code}"></span>
-            <span th:each="product : ${products}" th:if="${product.code == estimate.productCode}" th:text="${product.name}"></span>
-            <span th:if="${estimate.price > 0}" th:text="'Price: ' + ${estimate.price}"></span>
-            <span th:unless="${estimate.price > 0}">Not priced</span>
-            <td><a th:href="'EstimateDetail?estimateCode=' + ${estimate.code}">See details</a></td>
+<div class="em-table-container" th:fragment="fragment (estimates, products, header)">
+    <span class="table-title" th:text="${header}"></span>
+    <div class="em-table" th:unless="${estimates.isEmpty()}">
+        <div class="content-row" th:each="estimate : ${estimates}">
+            <div>
+                <span th:text="${estimate.code}"></span>
+                <span class="headers">Estimate Code</span>
+            </div>
+            <div>
+                <span th:each="product : ${products}" th:if="${product.code == estimate.productCode}" th:text="${product.name}"></span>
+                <span class="headers">Product Name</span>
+            </div>
+            <div>
+                <span th:if="${estimate.price > 0}" th:text="${estimate.price} + '$'"></span>
+                <span th:unless="${estimate.price > 0}">-</span>
+                <span class="headers">Estimate Price</span>
+            </div>
+            <div>
+                <a class="my-button" th:href="'EstimateDetail?estimateCode=' + ${estimate.code}">See details</a>
+            </div>
         </div>
     </div>
     <div th:if="${estimates.isEmpty()}">

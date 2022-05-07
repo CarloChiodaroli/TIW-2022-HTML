@@ -64,9 +64,11 @@ public class GoToClientHome extends GoToHome {
         String chosenProduct = request.getParameter("productCode");
         String errorCode = request.getParameter("error");
         int productCode = -1;
+        Product actualProduct = null;
         if (chosenProduct != null) {
             productCode = Integer.parseInt(chosenProduct);
             try {
+                actualProduct = productDAO.getByCode(productCode);
                 List<Integer> optionCodes = availabilityDAO.getFromProduct(productCode);
                 for (Integer optionCode : optionCodes) {
                     optionsOfProduct.add(optionDAO.getFromCode(optionCode));
@@ -95,6 +97,7 @@ public class GoToClientHome extends GoToHome {
         ctx.setVariable("estimates", userEstimates);
         ctx.setVariable("products", products);
         ctx.setVariable("actualProductCode", productCode);
+        ctx.setVariable("actualProduct", actualProduct);
         ctx.setVariable("error", error);
         ctx.setVariable("options", optionsOfProduct);
         ctx.setVariable("user", user.getUsername());

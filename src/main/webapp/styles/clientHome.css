@@ -1,0 +1,73 @@
+input[type="checkbox"] {
+    padding: 1rem;
+    margin: auto;
+    aspect-ratio: 1;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: white;
+}
+
+input[type="checkbox"]:checked {
+    background: #EE6C4D;
+}
+
+form > div > .my-button {
+    margin: .5rem;
+}
+
+img {
+    height: 5em;
+    width: 5em;
+}
+
+.content {
+    display: grid;
+    grid-auto-flow: row;
+    align-items: center;
+    background-color: var(--background-lev2);
+    width: fit-content;
+    padding: 1rem;
+    margin: auto;
+    border-radius: var(--little-radius);
+}
+
+.content > span, img {
+    margin: .5rem auto;
+}
+
+.content:hover {
+    outline: .1rem solid greenyellow;
+}
+
+.product-list {
+    display: flex;
+    align-self: center;
+    margin: .5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.em-table > span {
+    margin: .5rem auto;
+}
+
+.error {
+    padding: .5rem;
+    margin: .5rem auto;
+    border-radius: var(--little-radius);
+}
+
+.error0 {
+    background-color: darkgreen;
+    color: lightgreen;
+}
+
+.error2 {
+    background-color: darkred;
+    color: lightcoral;
+}
+
+.error1 {
+    background-color: darkgoldenrod;
+    color: lightyellow;
+}

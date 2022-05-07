@@ -28,24 +28,30 @@
 .bar > div {
     width: fit-content;
     justify-self: end;
-    margin:auto 0;
+    margin: auto 1rem;
+    display: grid;
+    grid-auto-flow: column;
+    gap: 1rem;
 }
 
 .bar > div > a {
     width: fit-content;
-    height: max-content;
+    height: fit-content;
     border: none;
+    margin: auto;
     padding: 1rem;
     color: white;
     border-radius: var(--little-radius);
+    outline-color: transparent;
+    background-color: transparent;
 }
 
 .home-button:hover {
-    background-color: green;
-    color: black;
+    outline-color: transparent;
+    background-color: darkolivegreen;
 }
 
 .logout-button:hover {
-    background-color: darkred;
-    color: black;
+    outline-color: transparent;
+    background-color: indianred;
 }
