@@ -19,13 +19,19 @@ form > .form-content > label {
     width: 100%
 }
 
-form > .form-content > label > input ,select{
+form > .form-content > label > input,
+form > .form-content > label > select {
     border-radius: var(--little-radius);
     padding: var(--little-padding);
     min-width: fit-content;
     width: 13rem;
     margin: auto 0 auto auto;
     font-size: 1rem;
+    color: black;
+}
+
+form > .form-content > label > select > option {
+    color: black;
 }
 
 form > .form-content > label > span {
@@ -35,5 +41,3 @@ form > .form-content > label > span {
     margin: auto auto auto 0;
     font-size: 1rem;
 }
-
-input

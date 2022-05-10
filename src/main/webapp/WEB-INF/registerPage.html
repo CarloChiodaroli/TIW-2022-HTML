@@ -5,8 +5,12 @@
     <title>Register Page - EM</title>
     <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/common.css'"/>
     <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/forms.css'"/>
+    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/haf.css'"/>
 </head>
 <body>
+    <div class="em-header bar" th:fragment="fragment (user)">
+        <span>Welcome</span>
+    </div>
     <div class="main-body">
         <span class="main-title">User Sign Up page</span>
         <form action="CheckSignUp" method="POST">
@@ -38,6 +42,9 @@
             </div>
         </form>
         <a class="my-button" href="Login">Login</a>
+    </div>
+    <div class="em-footer bar" th:fragment="fragment">
+        <span>Carlo Chiodaroli am Polytechnikum Mailand</span>
     </div>
 </body>
 </html>

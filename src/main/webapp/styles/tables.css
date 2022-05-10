@@ -30,10 +30,6 @@
     animation-timing-function: var(--animation-curve);
 }
 
-.em-table > .content-row:hover {
-    outline: .1rem solid var(--accent-color);
-}
-
 .em-table > .content-row > div {
     display: flex;
     flex-direction: column;

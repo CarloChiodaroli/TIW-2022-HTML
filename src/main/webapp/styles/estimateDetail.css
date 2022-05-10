@@ -1,0 +1,89 @@
+.detail-Body {
+    display: flex;
+    gap: .5rem;
+    flex-direction: column;
+}
+
+.detail-Body > span,  .em-table > span {
+    font-size: 1.25rem;
+}
+
+.first-row {
+    display: flex;
+    gap: .5rem;
+}
+
+.first-row > div {
+    margin: var(--little-padding);
+    width: available;
+}
+
+.product-details {
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: .5rem;
+    border-radius: var(--little-radius);
+    background-color: var(--background-lev1);
+    width: fit-content;
+}
+
+.product-details > img {
+    grid-area: 1 / 1 / span 3 / span 1;
+}
+
+.product-details > .product-title {
+    font-size: 1.25rem;
+}
+
+.product-details > div {
+    display: grid;
+    grid-auto-flow: row;
+    padding: .5rem;
+}
+
+.product-details > div > .headers {
+    padding: 0;
+    color: var(--colored-text);
+    font-size: .75rem;
+}
+
+.first-row > .user-details{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    padding: .5rem;
+    border-radius: var(--little-radius);
+    background-color: var(--background-lev1);
+    width: 100%;
+}
+
+.user-details > div {
+    display: flex;
+    outline: var(--background-lev2) solid .1rem;
+    border-radius: var(--little-radius);
+    padding: .5rem;
+    margin: auto;
+    height: inherit;
+    width: 100%;
+}
+
+.user-details > .client-detail {
+    flex-direction: row;
+}
+
+.user-details > .pricing-detail {
+    flex-direction: column;
+}
+
+.user-details > div > div {
+    padding: var(--little-padding);
+    margin: auto;
+}
+
+.user-details > div > .headers, div > .headers {
+    color: var(--colored-text);
+}
+
+.em-table > .content-row {
+    background-color: var(--background-lev1);
+}

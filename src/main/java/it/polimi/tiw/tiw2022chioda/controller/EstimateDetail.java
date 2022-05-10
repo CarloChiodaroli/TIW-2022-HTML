@@ -29,7 +29,7 @@ import java.util.List;
 @WebServlet(name = "EstimateDetail", value = "/EstimateDetail")
 public class EstimateDetail extends HttpServlet {
 
-    private static final String productDetailPath = "WEB-INF/productDetail.html";
+    private static final String productDetailPath = "WEB-INF/simpleDetail.html";
     private static final String priceEstimatePath = "WEB-INF/priceEstimate.html";
 
     @Serial
