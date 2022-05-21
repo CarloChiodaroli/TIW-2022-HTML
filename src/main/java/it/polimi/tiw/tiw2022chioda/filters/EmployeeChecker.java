@@ -17,7 +17,6 @@ public class EmployeeChecker implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        System.out.println("Employee filter executing");
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String loginPath = httpServletRequest.getServletContext().getContextPath() + "/loginPage.html";

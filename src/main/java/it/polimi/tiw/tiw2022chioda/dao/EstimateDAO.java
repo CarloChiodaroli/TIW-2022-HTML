@@ -24,6 +24,7 @@ public class EstimateDAO extends DAO {
         PreparedStatement preparedStatement = super.prepareQuery(query);
         preparedStatement.setInt(1, code);
         ResultSet result = super.coreQueryExecutor(preparedStatement);
+        if(!result.isBeforeFirst()) return null;
         result.next();
         return coreEstimateSetter(result);
     }
@@ -35,22 +36,26 @@ public class EstimateDAO extends DAO {
                 "WHERE EMPLOYEE IS NULL ";
         PreparedStatement preparedStatement = super.prepareQuery(query);
         ResultSet result = super.coreQueryExecutor(preparedStatement);
+        if(!result.isBeforeFirst()) return new ArrayList<>();
         return coreEstimateListSetter(result);
     }
 
     public List<Estimate> getByUser(User user) throws WrongUserTypeException, SQLException {
         Map<UserType, String> queries = new HashMap<>();
-        queries.put(UserType.CLIENT, "WHERE CLIENT = ? ");
-        queries.put(UserType.EMPLOYEE, "WHERE EMPLOYEE = ? ");
         String query = "SELECT CLIENT, EMPLOYEE, PRICE, PRODUCT, CODE " +
                 "FROM ESTIMATE ";
+        queries.put(UserType.CLIENT, "WHERE CLIENT = ? ");
+        queries.put(UserType.EMPLOYEE, "WHERE EMPLOYEE = ? ");
+        String orderBy = "ORDER BY CODE DESC ";
 
         if (!queries.containsKey(user.getUserType())) throw new WrongUserTypeException(user.getUserType());
         query += queries.get(user.getUserType());
+        query += orderBy;
 
         PreparedStatement preparedStatement = super.prepareQuery(query);
         preparedStatement.setInt(1, user.getID());
         ResultSet result = super.coreQueryExecutor(preparedStatement);
+        if(!result.isBeforeFirst()) return new ArrayList<>();
         return coreEstimateListSetter(result);
     }
 
@@ -61,7 +66,6 @@ public class EstimateDAO extends DAO {
         estimate.setPrice(result.getDouble("PRICE"));
         estimate.setProductCode(result.getInt("PRODUCT"));
         estimate.setCode(result.getInt("CODE"));
-        addOptions(estimate);
         return estimate;
     }
 
@@ -71,10 +75,6 @@ public class EstimateDAO extends DAO {
             estimateList.add(coreEstimateSetter(result));
         }
         return estimateList;
-    }
-
-    private void addOptions(Estimate estimate) {
-
     }
 
     private void controlEmployee(User user)

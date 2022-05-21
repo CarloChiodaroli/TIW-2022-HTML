@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Register Page - EM</title>
-    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/common.css'"/>
-    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/forms.css'"/>
-    <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/haf.css'"/>
+    <link rel="stylesheet" type="text/css" media="all" href="styles/common.css"/>
+    <link rel="stylesheet" type="text/css" media="all" href="styles/haf.css"/>
+    <link rel="stylesheet" type="text/css" media="all" href="styles/forms.css"/>
 </head>
 <body>
     <div class="em-header bar" th:fragment="fragment (user)">
         <span>Welcome</span>
     </div>
     <div class="main-body">
-        <span class="main-title">User Sign Up page</span>
-        <form action="CheckSignUp" method="POST">
-            <div class="form-content">
+        <span class="main-title">Sign Up Page</span>
+        <div>
+            <form action="CheckSignUp" method="POST">
                 <label>
                     <span>Username</span>
                     <input type="text" name="username" required>
@@ -39,9 +39,13 @@
                     </select>
                 </label>
                 <input class="my-button submit-button" type="submit" value="Register">
-            </div>
-        </form>
-        <a class="my-button" href="Login">Login</a>
+            </form>
+        </div>
+        <div>
+            <span>Already signed up?</span>
+            <a class="my-button" href="index.html">Login</a>
+        </div>
+        
     </div>
     <div class="em-footer bar" th:fragment="fragment">
         <span>Carlo Chiodaroli am Polytechnikum Mailand</span>

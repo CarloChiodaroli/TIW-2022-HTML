@@ -13,7 +13,6 @@ public class ClientChecker implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("Client filter executing");
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String loginPath = httpServletRequest.getServletContext().getContextPath() + "/loginPage.html";

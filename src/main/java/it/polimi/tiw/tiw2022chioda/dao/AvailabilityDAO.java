@@ -21,6 +21,7 @@ public class AvailabilityDAO extends DAO {
         preparedStatement.setInt(1, productCode);
         ResultSet resultSet = super.coreQueryExecutor(preparedStatement);
         List<Integer> result = new ArrayList<>();
+        if(!resultSet.isBeforeFirst()) return new ArrayList<>();
         while (resultSet.next()) {
             result.add(resultSet.getInt("OPT"));
         }

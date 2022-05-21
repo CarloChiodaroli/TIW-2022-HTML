@@ -11,7 +11,6 @@ public class LoginChecker implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        System.out.println("Checking Login");
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String loginPath = httpServletRequest.getServletContext().getContextPath() + "/loginPage.html";
@@ -21,7 +20,6 @@ public class LoginChecker implements Filter {
             httpServletResponse.sendRedirect(loginPath);
             return;
         }
-        System.out.println("Login ok");
         chain.doFilter(request, response);
     }
 }

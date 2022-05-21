@@ -19,6 +19,7 @@ public class DecorDAO extends DAO {
         preparedStatement.setInt(1, estimateCode);
         ResultSet result = super.coreQueryExecutor(preparedStatement);
         List<Integer> codes = new ArrayList<>();
+        if(!result.isBeforeFirst()) return new ArrayList<>();
         while (result.next()) {
             codes.add(result.getInt("OPT"));
         }

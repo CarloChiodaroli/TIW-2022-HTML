@@ -3,6 +3,7 @@ package it.polimi.tiw.tiw2022chioda.controller;
 import it.polimi.tiw.tiw2022chioda.bean.User;
 import it.polimi.tiw.tiw2022chioda.dao.UserDAO;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
+import it.polimi.tiw.tiw2022chioda.utils.ErrorSender;
 import org.apache.commons.text.StringEscapeUtils;
 
 import javax.servlet.ServletException;
@@ -11,12 +12,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 @WebServlet(name = "CheckLogin", value = "/CheckLogin")
 public class CheckLogin extends HttpServlet {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
 
@@ -38,14 +41,14 @@ public class CheckLogin extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("CheckLogin got Post");
+        System.out.println("CheckLogin started");
         String username = null;
         String password = null;
         username = StringEscapeUtils.escapeJava(request.getParameter("username"));
         password = StringEscapeUtils.escapeJava(request.getParameter("password"));
         if(username == null || password == null || username.isEmpty() || password.isEmpty()){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("Credentials must be not empty");
+            System.out.println("CheckLogin got empty Credentials");
+            ErrorSender.user(response, "Credentials must be not empty");
             return;
         }
         UserDAO userDAO = new UserDAO(connection);
@@ -53,16 +56,18 @@ public class CheckLogin extends HttpServlet {
         try {
             user = userDAO.checkCredentials(username, password);
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while querying database: " + e.getMessage());
+            ErrorSender.server(response);
             return;
         }
         String path = getServletContext().getContextPath();
         if(user == null){
-            path = path + "/loginPage.html";
-        } else {
-            request.getSession().setAttribute("user", user);
-            path = path + "/GoToHome";
+            ErrorSender.user(response, "Credentials are not valid");
+            return;
         }
+        request.getSession().setAttribute("user", user);
+
+        path = path + "/GoToHome";
+        System.out.println("CheckLogin - Successful login");
         response.sendRedirect(path);
     }
 }

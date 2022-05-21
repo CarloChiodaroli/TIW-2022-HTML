@@ -1,18 +1,13 @@
 package it.polimi.tiw.tiw2022chioda.controller;
 
 import it.polimi.tiw.tiw2022chioda.bean.Estimate;
-import it.polimi.tiw.tiw2022chioda.bean.Option;
 import it.polimi.tiw.tiw2022chioda.bean.Product;
 import it.polimi.tiw.tiw2022chioda.bean.User;
 import it.polimi.tiw.tiw2022chioda.dao.*;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
+import it.polimi.tiw.tiw2022chioda.utils.ErrorSender;
 import org.apache.commons.text.StringEscapeUtils;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -29,6 +24,7 @@ import java.util.stream.Collectors;
 public class CreateEstimate extends HttpServlet {
 
     private Connection connection;
+    private static final int E400 = HttpServletResponse.SC_BAD_REQUEST;
 
 
     public void init() throws ServletException {
@@ -44,50 +40,55 @@ public class CreateEstimate extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        List<String> optionCode = null;
-        String productCode = null;
-
-        optionCode = List.of(request.getParameterValues("optionCode")); // .escapeJava(request.getParameter("optionCode"));
-        productCode = StringEscapeUtils.escapeJava(request.getParameter("productCode"));
+        String[] optionCodes = request.getParameterValues("optionCode");
+        String productCode = StringEscapeUtils.escapeJava(request.getParameter("productCode"));
 
         if (productCode == null ||
-                optionCode.isEmpty() ||
+                optionCodes == null ||
                 productCode.isEmpty()) {
-            response.sendRedirect(session.getServletContext().getContextPath() + "/GoToClientHome?error=2");
-            //response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            //response.getWriter().println("Data fields must not be empty");
+            ErrorSender.user(response, "The form has not been completely filled");
             return;
         }
+
+        List<String> optionCode = List.of(optionCodes);
 
         AvailabilityDAO availabilityDAO = new AvailabilityDAO(connection);
         EstimateDAO estimateDAO = new EstimateDAO(connection);
         ProductDAO productDAO = new ProductDAO(connection);
 
-        Product actualProduct;
+        Product actualProduct = null;
+
         try {
             actualProduct = productDAO.getByCode(Integer.parseInt(productCode));
         } catch (SQLException e) {
-            response.sendRedirect(session.getServletContext().getContextPath() + "/GoToClientHome?error=1");
-            //response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while querying database: " + e.getMessage());
+            ErrorSender.server(response);
             return;
         }
+
+        if(actualProduct == null){
+            ErrorSender.user(response, "A valid product ID must be given");
+            return;
+        }
+
         List<Integer> optCodes = optionCode.stream()
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
+
+        if(optCodes.isEmpty()){
+            ErrorSender.user(response, "At leas one valid option code must be given");
+            return;
+        }
 
         List<Integer> possibleOptCodes;
         try {
             possibleOptCodes = availabilityDAO.getFromProduct(actualProduct.getCode());
         } catch (SQLException e){
-            response.sendRedirect(session.getServletContext().getContextPath() + "/GoToClientHome?error=1");
-            //response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while querying database: " + e.getMessage());
+            ErrorSender.server(response);
             return;
         }
 
         if(!possibleOptCodes.containsAll(optCodes)){
-            response.sendRedirect(session.getServletContext().getContextPath() + "/GoToClientHome?error=2");
-            //response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            //response.getWriter().println("There are options that are not available for the chosen product");
+            ErrorSender.user(response, "Some options are not available for the selected product");
             return;
         }
 
@@ -98,11 +99,9 @@ public class CreateEstimate extends HttpServlet {
         try{
             estimateDAO.createEstimate(candidate, (User) session.getAttribute("user"));
         } catch (SQLException e){
-            response.sendRedirect(session.getServletContext().getContextPath() + "/GoToClientHome?error=1");
-            //response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while inserting in database: " + e.getMessage());
+            ErrorSender.server(response);
             return;
         }
-
-        response.sendRedirect(session.getServletContext().getContextPath() + "/GoToClientHome?error=0");
+        response.sendRedirect(session.getServletContext().getContextPath() + "/GoToClientHome");
     }
 }

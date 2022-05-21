@@ -70,10 +70,8 @@ public class GoToEmployeeHome extends GoToHome {
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
         ctx.setVariable("pricedEstimates", pricedEstimates);
-        System.out.println(pricedEstimates);
         ctx.setVariable("products", products);
         ctx.setVariable("notPricedEstimates", notPricedEstimates);
-        System.out.println(notPricedEstimates);
         ctx.setVariable("user", user.getUsername());
         templateEngine.process(employeeHomePagePath, ctx, response.getWriter());
     }

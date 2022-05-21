@@ -3,6 +3,7 @@ package it.polimi.tiw.tiw2022chioda.controller;
 import it.polimi.tiw.tiw2022chioda.bean.User;
 import it.polimi.tiw.tiw2022chioda.dao.UserDAO;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
+import it.polimi.tiw.tiw2022chioda.utils.ErrorSender;
 import org.apache.commons.text.StringEscapeUtils;
 
 import javax.servlet.ServletException;
@@ -27,13 +28,13 @@ public class CheckSignUp extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("CheckLogin got Get");
+        System.out.println("CheckSignUp got Get");
         response.getWriter().append("Served at: ").append(request.getContextPath());
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("CheckLogin got Post");
+        System.out.println("CheckSignUp got Post");
         String username = null;
         String password = null;
         String repeatedPassword = null;
@@ -57,29 +58,25 @@ public class CheckSignUp extends HttpServlet {
                 repeatedPassword.isEmpty() ||
                 userType.isEmpty() ||
                 eMail.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("Credentials must be not empty");
+            ErrorSender.user(response, "Credentials must be not empty");
             return;
         }
         if (!password.equals(repeatedPassword)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("Passwords do not coincide");
+            ErrorSender.user(response, "Passwords do not coincide");
             return;
         }
         if (!isEMail(eMail)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("Given e-mail is not a valid e-mail address");
+            ErrorSender.user(response, "Given e-mail is not a valid e-mail address");
             return;
         }
         UserDAO userDAO = new UserDAO(connection);
         try {
             if (userDAO.isUsernamePresent(username)) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().println("Username already used");
+                ErrorSender.user(response, "Username already used");
                 return;
             }
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while querying database: " + e.getMessage());
+            ErrorSender.server(response);
             return;
         }
         User user = new User();
@@ -89,7 +86,7 @@ public class CheckSignUp extends HttpServlet {
             user.setEmail(eMail);
             user = userDAO.registerCredentials(user, password);
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while querying database: " + e.getMessage());
+            ErrorSender.server(response);
             return;
         }
         String path = getServletContext().getContextPath();

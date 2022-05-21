@@ -23,7 +23,7 @@
     grid-template-columns: auto auto;
     padding: .5rem;
     border-radius: var(--little-radius);
-    background-color: var(--background-lev1);
+    background-color: var(--background-lev2);
     width: fit-content;
 }
 
@@ -53,13 +53,12 @@
     gap: .5rem;
     padding: .5rem;
     border-radius: var(--little-radius);
-    background-color: var(--background-lev1);
+    background-color: var(--background-lev2);
     width: 100%;
 }
 
 .user-details > div {
     display: flex;
-    outline: var(--background-lev2) solid .1rem;
     border-radius: var(--little-radius);
     padding: .5rem;
     margin: auto;
@@ -82,8 +81,4 @@
 
 .user-details > div > .headers, div > .headers {
     color: var(--colored-text);
-}
-
-.em-table > .content-row {
-    background-color: var(--background-lev1);
 }

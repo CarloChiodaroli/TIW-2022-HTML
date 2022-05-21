@@ -7,6 +7,7 @@ import it.polimi.tiw.tiw2022chioda.bean.User;
 import it.polimi.tiw.tiw2022chioda.dao.*;
 import it.polimi.tiw.tiw2022chioda.enums.UserType;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
+import it.polimi.tiw.tiw2022chioda.utils.ErrorSender;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -25,6 +26,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet(name = "EstimateDetail", value = "/EstimateDetail")
 public class EstimateDetail extends HttpServlet {
@@ -50,17 +52,20 @@ public class EstimateDetail extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
+
         EstimateDAO estimateDAO = new EstimateDAO(connection);
         ProductDAO productDAO = new ProductDAO(connection);
         OptionDAO optionDAO = new OptionDAO(connection);
         UserDAO userDAO = new UserDAO(connection);
         DecorDAO decorDAO = new DecorDAO(connection);
+
         User user = (User) session.getAttribute("user");
         String tmpEstCode = request.getParameter("estimateCode");
+
         boolean priceEstimatePage = false;
         boolean pricedEstimate = false;
         if (tmpEstCode == null || tmpEstCode.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Got no estimate code");
+            ErrorSender.user(response, "Got no Estimate Code");
             return;
         }
         int estimateCode = Integer.parseInt(request.getParameter("estimateCode"));
@@ -68,15 +73,20 @@ public class EstimateDetail extends HttpServlet {
         try {
             baseEstimate = estimateDAO.getByCode(estimateCode);
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while getting data from database 1");
+            ErrorSender.server(response);
+            return;
+        }
+        if(baseEstimate == null){
+            ErrorSender.user(response, "There is no estimate with gotten code");
             return;
         }
         pricedEstimate = !(baseEstimate.getEmployeeId() == 0);
         if (!(baseEstimate.getClientId() == user.getID()) && !(baseEstimate.getEmployeeId() == user.getID())) {
             if (user.getUserType().equals(UserType.EMPLOYEE) && baseEstimate.getPrice() == 0) {
+                // decide to go to price estimate page
                 priceEstimatePage = true;
             } else {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User cannot see this estimate's details");
+                ErrorSender.user(response, "User cannot see this estimate's details");
                 return;
             }
         }
@@ -84,7 +94,7 @@ public class EstimateDetail extends HttpServlet {
         try {
             optionCodes = decorDAO.getOptionCodesFromEstimateCode(estimateCode);
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while getting data from database 3");
+            ErrorSender.server(response);
             return;
         }
         baseEstimate.setOptionCodes(optionCodes);
@@ -93,7 +103,7 @@ public class EstimateDetail extends HttpServlet {
             try {
                 options.add(optionDAO.getFromCode(optionCode));
             } catch (SQLException e) {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while getting data from database 4");
+                ErrorSender.server(response);
                 return;
             }
         }
@@ -102,30 +112,26 @@ public class EstimateDetail extends HttpServlet {
         try {
             product = productDAO.getByCode(baseEstimate.getProductCode());
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while getting data from database 5");
+            ErrorSender.server(response);
             return;
         }
 
-        User employee;
+        Optional<User> employee;
         User client;
         if(baseEstimate.getClientId() == user.getID()){
             client = user;
-            if(pricedEstimate){
-                try {
-                    employee = userDAO.getById(baseEstimate.getEmployeeId());
-                } catch (SQLException e) {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while getting data from database 5");
-                    return;
-                }
-            } else {
-                employee = new User();
+            try {
+                employee = Optional.ofNullable(userDAO.getById(baseEstimate.getEmployeeId()));
+            } catch (SQLException e) {
+                ErrorSender.server(response);
+                return;
             }
         } else {
-            employee = user;
+            employee = Optional.of(user);
             try {
                 client = userDAO.getById(baseEstimate.getClientId());
             } catch (SQLException e) {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while getting data from database 6");
+                ErrorSender.server(response);
                 return;
             }
         }
@@ -138,7 +144,7 @@ public class EstimateDetail extends HttpServlet {
         ctx.setVariable("canPrice", priceEstimatePage);
         ctx.setVariable("client", client);
         ctx.setVariable("priced", pricedEstimate);
-        if(pricedEstimate) ctx.setVariable("employee", employee);
+        ctx.setVariable("employee", employee.orElse(null));
         if(priceEstimatePage) templateEngine.process(priceEstimatePath, ctx, response.getWriter());
         else templateEngine.process(productDetailPath, ctx, response.getWriter());
     }

@@ -9,6 +9,7 @@ import it.polimi.tiw.tiw2022chioda.dao.EstimateDAO;
 import it.polimi.tiw.tiw2022chioda.dao.OptionDAO;
 import it.polimi.tiw.tiw2022chioda.dao.ProductDAO;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
+import it.polimi.tiw.tiw2022chioda.utils.ErrorSender;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -24,10 +25,7 @@ import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @WebServlet(name = "GoToClientHome", value = "/GoToClientHome")
 public class GoToClientHome extends GoToHome {
@@ -38,6 +36,7 @@ public class GoToClientHome extends GoToHome {
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
     private Connection connection = null;
+    private boolean gotError = false;
 
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
@@ -59,36 +58,36 @@ public class GoToClientHome extends GoToHome {
         User user = (User) session.getAttribute("user");
 
         List<Estimate> userEstimates = getUserEstimates(estimateDAO, user, response);
+        if(gotError) return;
         List<Product> products = getAllProducts(productDAO, response);
+        if(gotError) return;
         List<Option> optionsOfProduct = new ArrayList<>();
         String chosenProduct = request.getParameter("productCode");
-        String errorCode = request.getParameter("error");
+
         int productCode = -1;
-        Product actualProduct = null;
+        Optional<Product> actualProduct = Optional.empty();
+
         if (chosenProduct != null) {
             productCode = Integer.parseInt(chosenProduct);
             try {
-                actualProduct = productDAO.getByCode(productCode);
-                List<Integer> optionCodes = availabilityDAO.getFromProduct(productCode);
-                for (Integer optionCode : optionCodes) {
-                    optionsOfProduct.add(optionDAO.getFromCode(optionCode));
-                }
+                actualProduct = Optional.ofNullable(productDAO.getByCode(productCode));
             } catch (SQLException e) {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering options");
+                ErrorSender.server(response);
                 return;
             }
-        }
-        int error = -1;
-        if (errorCode != null) {
-            error = Integer.parseInt(errorCode);
-            try {
-                List<Integer> optionCodes = availabilityDAO.getFromProduct(productCode);
-                for (Integer optionCode : optionCodes) {
-                    optionsOfProduct.add(optionDAO.getFromCode(optionCode));
-                }
-            } catch (SQLException e) {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering options");
+            if(actualProduct.isEmpty()) {
+                ErrorSender.user(response, "No product has " + productCode + " as product code");
                 return;
+            } else {
+                try {
+                    List<Integer> optionCodes = availabilityDAO.getFromProduct(productCode);
+                    for (Integer optionCode : optionCodes) {
+                        optionsOfProduct.add(optionDAO.getFromCode(optionCode));
+                    }
+                } catch (SQLException e) {
+                    ErrorSender.server(response);
+                    return;
+                }
             }
         }
 
@@ -97,9 +96,9 @@ public class GoToClientHome extends GoToHome {
         ctx.setVariable("estimates", userEstimates);
         ctx.setVariable("products", products);
         ctx.setVariable("actualProductCode", productCode);
-        ctx.setVariable("actualProduct", actualProduct);
-        ctx.setVariable("error", error);
-        ctx.setVariable("options", optionsOfProduct);
+        actualProduct.ifPresent(product -> {
+            ctx.setVariable("actualProduct", product);
+            ctx.setVariable("options", optionsOfProduct);});
         ctx.setVariable("user", user.getUsername());
         templateEngine.process(clientHomePagePath, ctx, response.getWriter());
     }
@@ -110,10 +109,10 @@ public class GoToClientHome extends GoToHome {
         try {
             userEstimates = estimateDAO.getByUser(user);
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering estimates");
+            ErrorSender.server(response);
+            gotError = true;
             return new ArrayList<>();
         }
-        System.out.println(userEstimates);
         return userEstimates;
     }
 
@@ -123,7 +122,8 @@ public class GoToClientHome extends GoToHome {
         try {
             products = productDAO.getAll();
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering products");
+            ErrorSender.server(response);
+            gotError = true;
             return new ArrayList<>();
         }
         return products;

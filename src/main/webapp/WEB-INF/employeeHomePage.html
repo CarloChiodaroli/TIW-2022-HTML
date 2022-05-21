@@ -12,8 +12,8 @@
     <div th:insert="/WEB-INF/templates/header (${session.user})"></div>
     <div class="main-body">
         <span class="main-title">Employee Home Page</span>
-        <div th:insert="~{/WEB-INF/templates/estimateTable (${notPricedEstimates}, ${products}, ${'Not Priced estimates'})}" ></div>
-        <div th:insert="~{/WEB-INF/templates/estimateTable (${pricedEstimates}, ${products}, ${'Priced estimates'})}" ></div>
+        <div th:replace="~{/WEB-INF/templates/estimateTable (${notPricedEstimates}, ${products}, ${'Not Priced estimates'})}" ></div>
+        <div th:replace="~{/WEB-INF/templates/estimateTable (${pricedEstimates}, ${products}, ${'Priced estimates'})}" ></div>
     </div>
     <div th:insert="/WEB-INF/templates/footer"></div>
 </body>

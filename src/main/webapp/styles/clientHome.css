@@ -50,24 +50,3 @@ img {
 .em-table > span {
     margin: .5rem auto;
 }
-
-.error {
-    padding: .5rem;
-    margin: .5rem auto;
-    border-radius: var(--little-radius);
-}
-
-.error0 {
-    background-color: darkgreen;
-    color: lightgreen;
-}
-
-.error2 {
-    background-color: darkred;
-    color: lightcoral;
-}
-
-.error1 {
-    background-color: darkgoldenrod;
-    color: lightyellow;
-}

@@ -18,13 +18,11 @@
         <form action="PriceEstimate" method="POST">
             <input type="hidden" name="employeeId" th:value="${session.user.ID}" required>
             <input type="hidden" name="estimateCode" th:value="${estimate.code}" required>
-            <div class="form-content">
-                <label>
-                    <span>Price: </span>
-                    <input type="number" step="0.01" name="price" required>
-                </label>
-                <input class="my-button submit-button" type="submit" name="Price Estimate">
-            </div>
+            <label>
+                <span>Price: </span>
+                <input type="number" step="0.01" name="price" required>
+            </label>
+            <input class="my-button submit-button" type="submit" name="Price Estimate">
         </form>
     </div>
     <div th:insert="/WEB-INF/templates/footer"></div>

@@ -66,9 +66,7 @@ public class UserDAO extends DAO {
 
     private User coreUserGetter(PreparedStatement preparedStatement) throws SQLException {
         ResultSet result = super.coreQueryExecutor(preparedStatement);
-        if (result == null) {
-            return null;
-        }
+        if(!result.isBeforeFirst()) return null;
         result.next();
         User user = new User();
         user.setID(result.getInt("ID"));

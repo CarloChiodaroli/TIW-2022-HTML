@@ -1,15 +1,11 @@
-
-form > .form-content {
-    display: flex;
+form {
+    display: grid;
     gap: .5rem;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    background-color: var(--background-lev3);
-    border-radius: var(--little-radius);
-    padding: 1rem;
 }
 
-form > .form-content > label {
+form  > label {
     border-color: var(--accent-color);
     border-radius: var(--little-radius);
     padding: var(--little-padding);
@@ -19,25 +15,37 @@ form > .form-content > label {
     width: 100%
 }
 
-form > .form-content > label > input,
-form > .form-content > label > select {
+form > label > input,
+form > label > select {
     border-radius: var(--little-radius);
     padding: var(--little-padding);
     min-width: fit-content;
     width: 13rem;
     margin: auto 0 auto auto;
     font-size: 1rem;
-    color: black;
+    border-color: var(--accent-color);
+    background-color: var(--background-lev2);
+
 }
 
-form > .form-content > label > select > option {
-    color: black;
+form > label > input:focus {
+    outline: none;
+    background-color: var(--background-lev3);
+    border-color: greenyellow;
 }
 
-form > .form-content > label > span {
+form > label > input:placeholder-shown {
+    color: darkgrey;
+}
+
+form > label > span {
     width: fit-content;
     text-align: left;
     padding: var(--little-padding);
     margin: auto auto auto 0;
     font-size: 1rem;
+}
+
+form > .form-title {
+    font-size: 1.5rem;
 }

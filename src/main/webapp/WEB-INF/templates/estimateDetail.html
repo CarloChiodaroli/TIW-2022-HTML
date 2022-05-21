@@ -1,56 +1,67 @@
-<div class="detail-Body" th:fragment="fragment">
-    <span th:text="'Estimate code: ' + ${estimate.code}"></span>
-    <div class="first-row">
-        <div class="product-details">
-            <div>
-                <span class="product-title">Product</span>
-            </div>
-            <img th:src="${#servletContext.contextPath} + '/images/dbImages/' + ${product.image}" th:alt="${product.name} + ' photo'">
-            <div>
-                <span th:text="${product.name}"></span>
-                <span class="headers">Name</span>
-            </div>
-            <div>
-                <span th:text="${product.code}"></span>
-                <span class="headers">Code</span>
-            </div>
-        </div>
-        <div class="user-details">
-            <div class="client-detail">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" media="all" href="../../styles/common.css"/>
+    <link rel="stylesheet" type="text/css" media="all" href="../../styles/haf.css"/>
+    <link rel="stylesheet" type="text/css" media="all" href="../../styles/tables.css"/>
+    <link rel="stylesheet" type="text/css" media="all" href="../../styles/estimateDetail.css"/>
+</head>
+<div class="main-body">
+    <div class="detail-Body" th:fragment="fragment">
+        <span th:text="'Estimate code: ' + ${estimate.code}"></span>
+        <div class="first-row">
+            <div class="product-details">
                 <div>
-                    <span class="headers">Client username: </span>
-                    <span th:text="${client.username}"></span>
+                    <span class="product-title">Product</span>
+                </div>
+                <img th:src="${#servletContext.contextPath} + '/images/dbImages/' + ${product.image}" th:alt="${product.name} + ' photo'"
+                        src="../../images/dbImages/hammer_1f528.png" + alt="Hammer image">
+                <div>
+                    <span th:text="${product.name}">Hammer</span>
+                    <span class="headers">Name</span>
+                </div>
+                <div>
+                    <span th:text="${product.code}">45</span>
+                    <span class="headers">Code</span>
                 </div>
             </div>
-            <div class="pricing-detail">
-                <div th:if="${priced}">
-                    <span class="headers">Priced by: </span>
-                    <span th:text="${employee.username}"></span>
+            <div class="user-details">
+                <div class="client-detail">
+                    <div>
+                        <span class="headers">Client username: </span>
+                        <span th:text="${client.username}">dovakiin09</span>
+                    </div>
                 </div>
-                <div th:if="${priced}">
-                    <span class="headers">Price: </span>
-                    <span th:text="${estimate.getPrice()} + '$'"></span>
-                </div>
-                <div th:unless="${priced}">
-                    <span>This estimate has not been priced yet</span>
+                <div class="pricing-detail">
+                    <div th:if="${priced}">
+                        <span class="headers">Priced by: </span>
+                        <span th:text="${employee.username}">emerito33</span>
+                    </div>
+                    <div th:if="${priced}">
+                        <span class="headers">Price: </span>
+                        <span th:text="${estimate.getPrice()} + '$'">34$</span>
+                    </div>
+                    <div th:unless="${priced}">
+                        <span>This estimate has not been priced yet</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="em-table">
-        <span>With options:</span>
-        <div class="content-row" th:each="option : ${options}">
-            <div>
-                <span th:text="${option.code}"></span>
-                <span class="headers">Code</span>
-            </div>
-            <div>
-                <span th:text="${option.name}"></span>
-                <span class="headers">Name</span>
-            </div>
-            <div>
-                <span th:text="${option.type}"></span>
-                <span class="headers">Type</span>
+        <div class="em-table">
+            <span>With options:</span>
+            <div class="content-row" th:each="option : ${options}">
+                <div>
+                    <span th:text="${option.code}">23</span>
+                    <span class="headers">Code</span>
+                </div>
+                <div>
+                    <span th:text="${option.name}">Alduin</span>
+                    <span class="headers">Name</span>
+                </div>
+                <div>
+                    <span th:text="${option.type}">VERY_BAD</span>
+                    <span class="headers">Type</span>
+                </div>
             </div>
         </div>
     </div>
