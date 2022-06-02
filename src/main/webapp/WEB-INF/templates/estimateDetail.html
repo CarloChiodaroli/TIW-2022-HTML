@@ -5,17 +5,20 @@
     <link rel="stylesheet" type="text/css" media="all" href="../../styles/haf.css"/>
     <link rel="stylesheet" type="text/css" media="all" href="../../styles/tables.css"/>
     <link rel="stylesheet" type="text/css" media="all" href="../../styles/estimateDetail.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Monda&display=swap" rel="stylesheet">
 </head>
-<div class="main-body">
-    <div class="detail-Body" th:fragment="fragment">
-        <span th:text="'Estimate code: ' + ${estimate.code}"></span>
+<main>
+    <section class="detail-Body" th:fragment="fragment">
+        <span th:text="'Estimate code: ' + ${estimate.code}">Estimate code: 56</span>
         <div class="first-row">
             <div class="product-details">
+                <img th:src="${#servletContext.contextPath} + '/images/dbImages/' + ${product.image}" th:alt="${product.name} + ' photo'"
+                        src="../../images/dbImages/hammer_1f528.png" + alt="Hammer image">
                 <div>
                     <span class="product-title">Product</span>
                 </div>
-                <img th:src="${#servletContext.contextPath} + '/images/dbImages/' + ${product.image}" th:alt="${product.name} + ' photo'"
-                        src="../../images/dbImages/hammer_1f528.png" + alt="Hammer image">
                 <div>
                     <span th:text="${product.name}">Hammer</span>
                     <span class="headers">Name</span>
@@ -47,9 +50,9 @@
                 </div>
             </div>
         </div>
-        <div class="em-table">
-            <span>With options:</span>
-            <div class="content-row" th:each="option : ${options}">
+        <dl>
+            <span class="table-title">With options:</span>
+            <dt class="content-row" th:each="option : ${options}">
                 <div>
                     <span th:text="${option.code}">23</span>
                     <span class="headers">Code</span>
@@ -62,7 +65,7 @@
                     <span th:text="${option.type}">VERY_BAD</span>
                     <span class="headers">Type</span>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
+            </dt>
+        </dl>
+    </section>
+</main>

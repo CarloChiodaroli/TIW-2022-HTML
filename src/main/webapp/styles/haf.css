@@ -1,16 +1,18 @@
-.em-header {
+header {
     top: 0;
 }
 
-.em-header > span {
+footer {
+    bottom: 0;
+    text-align: center;
+}
+
+header > span {
     text-align: left;
 }
 
-.em-footer {
-    bottom: 0;
-}
-
-.bar {
+header,
+footer {
     width: 100%;
     position: fixed;
     height: fit-content;
@@ -20,12 +22,14 @@
     grid-auto-flow: column;
 }
 
-.bar > span {
+header > span ,
+footer > span {
     padding: 1rem;
     color: white;
 }
 
-.bar > div {
+header > div ,
+footer > div {
     width: fit-content;
     justify-self: end;
     margin: auto 1rem;
@@ -34,7 +38,8 @@
     gap: 1rem;
 }
 
-.bar > div > a {
+header > div > .my-button ,
+footer > div > .my-button {
     width: fit-content;
     height: fit-content;
     border: none;

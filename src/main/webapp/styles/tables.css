@@ -4,55 +4,53 @@
     flex-direction: column;
     border-radius: var(--little-radius);
     padding: .5rem;
-    background-color: var(--background-lev3);
+    background-color: var(--background-lev1);
 }
 
 .table-title {
-    font-size: 2rem;
-    margin: .5rem;
+    font-size: 1.5em;
+    margin: auto;
+    text-align: center;
 }
 
-.em-table {
+dl {
     display: grid;
     grid-auto-flow: row;
+    margin: auto;
+    width: 100%;
+    gap: .5rem;
 }
 
-.em-table > .content-row {
+dl > dt {
     width: inherit;
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
     background-color: var(--background-lev2);
-    margin: var(--little-padding);
     padding: var(--little-padding);
     border-radius: var(--little-radius);
-    animation-duration: var(--animation-duration);
-    animation-timing-function: var(--animation-curve);
 }
 
-.em-table > .content-row > div {
+dl > dt > div {
     display: flex;
     flex-direction: column;
     width: 10rem;
     margin: auto;
 }
 
-.em-table > .content-row > div > a {
-    padding: .3rem 1.7rem;
+dl > dt > div > a.my-button {
+    padding: var(--little-padding) calc(var(--medium-padding) * 2);
     margin: auto;
     border-radius: var(--little-radius);
     width: fit-content;
 }
 
-.em-table > .content-row > div > span {
-    font-size: 1rem;
-    padding: var(--little-padding);
+dl > dt > div > span {
+    font-size: 1em;
 }
 
-.em-table > .content-row > div > .headers {
+dl > dt > div > span.headers {
     padding: 0;
     color: var(--colored-text);
-    font-size: .75rem;
+    font-size: .75em;
 }
-
-

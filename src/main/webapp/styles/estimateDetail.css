@@ -1,10 +1,11 @@
-.detail-Body {
+section {
     display: flex;
     gap: .5rem;
     flex-direction: column;
 }
 
-.detail-Body > span,  .em-table > span {
+section > span,
+.em-table > span {
     font-size: 1.25rem;
 }
 
@@ -29,6 +30,7 @@
 
 .product-details > img {
     grid-area: 1 / 1 / span 3 / span 1;
+    align-self: center;
 }
 
 .product-details > .product-title {
@@ -39,12 +41,18 @@
     display: grid;
     grid-auto-flow: row;
     padding: .5rem;
+    height: fit-content;
 }
 
 .product-details > div > .headers {
     padding: 0;
     color: var(--colored-text);
     font-size: .75rem;
+    margin: 0rem;
+}
+
+.product-details > div > span {
+    padding: 0;
 }
 
 .first-row > .user-details{

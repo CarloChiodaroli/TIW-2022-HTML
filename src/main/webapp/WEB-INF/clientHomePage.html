@@ -7,14 +7,17 @@
     <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/haf.css'"/>
     <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/tables.css'"/>
     <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/clientHome.css'"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Monda&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div th:insert="/WEB-INF/templates/header (${session.user})"></div>
-    <div class="main-body">
-        <span class="main-title">Client Home Page</span>
+    <div th:replace="/WEB-INF/templates/header (${session.user})"></div>
+    <main>
+        <h1>Client Home Page</h1>
         <div th:replace="/WEB-INF/templates/newEstimateForm (${products}, ${options}, ${actualProductCode}, ${actualProduct})"></div>
         <div th:replace="~{/WEB-INF/templates/estimateTable (${estimates}, ${products}, ${'My past estimates'})}" ></div>
-    </div>
-    <div th:insert="/WEB-INF/templates/footer"></div>
+    </main>
+    <div th:replace="/WEB-INF/templates/footer"></div>
 </body>
 </html>

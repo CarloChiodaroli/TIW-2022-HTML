@@ -6,16 +6,19 @@
     <link rel="stylesheet" type="text/css" media="all" href="styles/common.css"/>
     <link rel="stylesheet" type="text/css" media="all" href="styles/haf.css"/>
     <link rel="stylesheet" type="text/css" media="all" href="styles/forms.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Monda&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="em-header bar" th:fragment="fragment (user)">
+    <header>
         <span>Welcome</span>
-    </div>
-    <div class="main-body">
-        <span class="main-title">Welcome in Estimate Management</span>
-        <div>
+    </header>
+    <main>
+        <h1>Welcome in Estimate Management</h1>
+        <section>
             <form class="form-content" action="CheckLogin" method="POST">
-                <span class="form-title">User Login</span>
+                <h2>User Login</h2>
                 <label title="Username">
                     <span>Username</span>
                     <input type="text" name="username" required>
@@ -24,16 +27,16 @@
                     <span>Password</span>
                     <input type="password" name="password" required>
                 </label>
-                <input class="my-button submit-button" type="submit" value="Login">
+                <input class="my-button" type="submit" value="Login">
             </form>
-        </div>
-        <div>
+        </section>
+        <section>
             <span>Don't have an account?</span>
             <a href="registerPage.html" class="my-button">Sign Up</a>
-        </div>
-    </div>
-    <div class="em-footer bar" th:fragment="fragment">
-        <span>Carlo Chiodaroli am Polytechnikum Mailand</span>
-    </div>
+        </section>
+    </main>
+    <footer>
+        <span>Carlo Chiodaroli - Estimate Management - 2022</span>
+    </footer>
 </body>
 </html>

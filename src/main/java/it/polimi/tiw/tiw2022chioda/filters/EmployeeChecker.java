@@ -19,7 +19,7 @@ public class EmployeeChecker implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        String loginPath = httpServletRequest.getServletContext().getContextPath() + "/loginPage.html";
+        String loginPath = httpServletRequest.getServletContext().getContextPath() + "/index.html";
         HttpSession session = httpServletRequest.getSession();
         User user;
         user = (User) session.getAttribute("user");

@@ -13,7 +13,7 @@ public class LoginChecker implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        String loginPath = httpServletRequest.getServletContext().getContextPath() + "/loginPage.html";
+        String loginPath = httpServletRequest.getServletContext().getContextPath() + "/index.html";
         HttpSession session = httpServletRequest.getSession();
         if (session.isNew() || session.getAttribute("user") == null) {
             System.err.println("There is no Login");

@@ -1,4 +1,4 @@
-<div class="em-table-container" th:fragment="fragment (products, options, actualProductCode, actualProduct)">
+<section class="em-table-container" th:fragment="fragment (products, options, actualProductCode, actualProduct)">
     <div th:if="${actualProductCode == -1}">
         <div><span class="table-title">New estimate form</span></div>
         <div><span>Choose a product to make an estimate</span></div>
@@ -11,14 +11,14 @@
     </div>
     <div th:unless="${actualProductCode == -1}">
         <form action="CreateEstimate" method="POST">
-            <div class="em-table">
+            <dl class="em-table">
                 <span class="table-title">Available options for</span>
                 <div class="content no-hover">
                     <img th:src="${#servletContext.contextPath} + '/images/dbImages/' + ${actualProduct.image}" th:alt="${actualProduct.name} + ' photo'">
                     <span th:text="${actualProduct.name}"></span>
                 </div>
                 <span>Tik the checkbox on the side to choose at least one option</span>
-                <div class="content-row" th:each="option : ${options}">
+                <dt class="content-row" th:each="option : ${options}">
                     <div>
                         <span th:text="${option.code}"></span>
                         <span class="headers">Code</span>
@@ -34,12 +34,12 @@
                     <div>
                         <input type="checkbox" name="optionCode" th:value="${option.code}">
                     </div>
-                </div>
-            </div>
+                </dt>
+            </dl>
             <input type="hidden" name="productCode" th:value="${actualProductCode}">
             <div>
                 <input class="my-button" type="submit" name="Create Estimate">
             </div>
         </form>
     </div>
-</div>
+</section>

@@ -8,23 +8,28 @@
     <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/haf.css'"/>
     <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/tables.css'"/>
     <link rel="stylesheet" type="text/css" media="all" th:href="${#servletContext.contextPath} + '/styles/estimateDetail.css'"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Monda&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div th:insert="/WEB-INF/templates/header (${session.user})"></div>
-    <div class="main-body">
-        <span class="main-title">Price Estimate page</span>
+    <div th:replace="/WEB-INF/templates/header (${session.user})"></div>
+    <main>
+        <h1 class="main-title">Price Estimate page</h1>
         <div th:replace="~{/WEB-INF/templates/estimateDetail.html :: fragment}"
              th:with="estimate=${estimate}, product=${product}, options=${options}, client=${client}, priced=${priced}"></div>
-        <form action="PriceEstimate" method="POST">
-            <input type="hidden" name="employeeId" th:value="${session.user.ID}" required>
-            <input type="hidden" name="estimateCode" th:value="${estimate.code}" required>
-            <label>
-                <span>Price: </span>
-                <input type="number" step="0.01" name="price" required>
-            </label>
-            <input class="my-button submit-button" type="submit" name="Price Estimate">
-        </form>
-    </div>
-    <div th:insert="/WEB-INF/templates/footer"></div>
+        <section>
+            <form action="PriceEstimate" method="POST">
+                <input type="hidden" name="employeeId" th:value="${session.user.ID}" required>
+                <input type="hidden" name="estimateCode" th:value="${estimate.code}" required>
+                <label>
+                    <span>Price: </span>
+                    <input type="number" step="0.01" name="price" required>
+                </label>
+                <input class="my-button submit-button" type="submit" name="Price Estimate">
+            </form>
+        </section>
+    </main>
+    <div th:replace="/WEB-INF/templates/footer"></div>
 </body>
 </html>

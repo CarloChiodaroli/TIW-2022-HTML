@@ -6,25 +6,29 @@
     --text: white;
     --colored-text: #EE6C4D;
     --heder-hover-background: #834100;
-    --accent-color: #EE6C4D;
-    --little-radius: .3rem;
-    --little-padding: .3rem;
+    --accent-color: #78290f;
+    --little-radius: .3em;
+    --little-padding: .3em;
+    --medium-padding: .5em;
+    --big-padding: 1em;
     --animation-duration: 1s;
     --animation-curve: ease;
+    --button-text-color: black;
 }
 
 *, *::before, *::after {
     box-sizing: border-box;
+    color: var(--text);
     font-family: 'Monda', sans-serif;
     font-weight: normal;
-    color: var(--text);
 }
 
 body {
     place-items: center;
     background-color: var(--background-lev1);
     margin: 0;
-    min-width: 30rem;
+    min-width: 30em;
+    color: var(--text);
 }
 
 div {
@@ -33,50 +37,59 @@ div {
 
 a:link {
     text-decoration: none;
+    color: var(--text);
 }
 
-.main-body {
+main {
     min-width: fit-content;
     width: fit-content;
-    padding: 1rem 1.5rem;
+    padding: var(--big-padding) var(--big-padding);
     display: flex;
     gap: 1em;
     flex-direction: column;
     align-items: center;
     background-color: var(--background-lev2);
     border-radius: var(--little-radius);
-    margin: 5rem auto;
+    margin: 5em auto;
 }
 
-.main-body > div {
+main > section {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1em;
     background-color: var(--background-lev1);
-    padding: 1rem;
+    padding: var(--big-padding);
     border-radius: var(--little-radius);
-    width: fit-content;
+    width: 100%;
+    vertical-align: middle;
 }
 
-.main-title {
+section > span {
+    width: fit-content;
+    margin: auto;
+}
+
+h1 {
     font-size: 2.5rem;
+    margin: auto;
 }
 
 .my-button {
     font-size: 1rem;
-    padding: 1rem;
-    width: 15rem;
+    padding: var(--medium-padding);
+    width: 10em;
     background-color: var(--accent-color);
     border-radius: var(--little-radius);
     border: none;
-    outline: .1rem solid black;
+    outline: .1em solid black;
     animation-duration: var(--animation-duration);
     animation-timing-function: var(--animation-curve);
     margin: auto;
+    text-align: center;
 }
 
 .my-button:hover {
-    outline: .1rem solid greenyellow;
+    outline: .1em solid greenyellow;
 }
 
 .no-hover:hover {

@@ -1,7 +1,7 @@
-<div class="em-table-container" th:fragment="fragment (estimates, products, header)">
+<section class="em-table-container" th:fragment="fragment (estimates, products, header)">
     <span class="table-title" th:text="${header}"></span>
-    <div class="em-table" th:unless="${estimates.isEmpty()}">
-        <div class="content-row" th:each="estimate : ${estimates}">
+    <dl th:unless="${estimates.isEmpty()}">
+        <dt th:each="estimate : ${estimates}">
             <div>
                 <span th:text="${estimate.code}"></span>
                 <span class="headers">Estimate Code</span>
@@ -18,9 +18,9 @@
             <div>
                 <a class="my-button" th:href="'EstimateDetail?estimateCode=' + ${estimate.code}">See details</a>
             </div>
-        </div>
-    </div>
+        </dt>
+    </dl>
     <div th:if="${estimates.isEmpty()}">
-        No estimates found;
+        <span>No estimates found</span>
     </div>
-</div>
+</section>
