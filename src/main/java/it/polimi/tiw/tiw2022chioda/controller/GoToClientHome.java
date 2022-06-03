@@ -36,7 +36,6 @@ public class GoToClientHome extends GoToHome {
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
     private Connection connection = null;
-    private boolean gotError = false;
 
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
@@ -57,10 +56,20 @@ public class GoToClientHome extends GoToHome {
         OptionDAO optionDAO = new OptionDAO(connection);
         User user = (User) session.getAttribute("user");
 
-        List<Estimate> userEstimates = getUserEstimates(estimateDAO, user, response);
-        if(gotError) return;
-        List<Product> products = getAllProducts(productDAO, response);
-        if(gotError) return;
+        List<Estimate> userEstimates = new ArrayList<>();
+        try {
+            userEstimates        = estimateDAO.getByUser(user);
+        } catch (SQLException e) {
+            ErrorSender.database(response, "getting user estimates");
+        }
+
+        List<Product> products = new ArrayList<>();
+        try {
+            products  = productDAO.getAll();
+        } catch (SQLException e) {
+            ErrorSender.database(response, "getting products");
+        }
+
         List<Option> optionsOfProduct = new ArrayList<>();
         String chosenProduct = request.getParameter("productCode");
 
@@ -68,15 +77,19 @@ public class GoToClientHome extends GoToHome {
         Optional<Product> actualProduct = Optional.empty();
 
         if (chosenProduct != null) {
-            productCode = Integer.parseInt(chosenProduct);
+            try {
+                productCode = Integer.parseInt(chosenProduct);
+            } catch (NumberFormatException e){
+                ErrorSender.userNotNumber(response, "productCode");
+            }
             try {
                 actualProduct = Optional.ofNullable(productDAO.getByCode(productCode));
             } catch (SQLException e) {
-                ErrorSender.server(response);
+                ErrorSender.database(response, "getting the actual product");
                 return;
             }
             if(actualProduct.isEmpty()) {
-                ErrorSender.user(response, "No product has " + productCode + " as product code");
+                ErrorSender.userWrongData(response, "No product has " + productCode + " as product code");
                 return;
             } else {
                 try {
@@ -85,7 +98,7 @@ public class GoToClientHome extends GoToHome {
                         optionsOfProduct.add(optionDAO.getFromCode(optionCode));
                     }
                 } catch (SQLException e) {
-                    ErrorSender.server(response);
+                    ErrorSender.database(response, "getting product's options");
                     return;
                 }
             }
@@ -103,34 +116,8 @@ public class GoToClientHome extends GoToHome {
         templateEngine.process(clientHomePagePath, ctx, response.getWriter());
     }
 
-    protected List<Estimate> getUserEstimates(EstimateDAO estimateDAO, User user, HttpServletResponse response)
-            throws IOException {
-        List<Estimate> userEstimates;
-        try {
-            userEstimates = estimateDAO.getByUser(user);
-        } catch (SQLException e) {
-            ErrorSender.server(response);
-            gotError = true;
-            return new ArrayList<>();
-        }
-        return userEstimates;
-    }
-
-    protected List<Product> getAllProducts(ProductDAO productDAO, HttpServletResponse response)
-            throws IOException {
-        List<Product> products;
-        try {
-            products = productDAO.getAll();
-        } catch (SQLException e) {
-            ErrorSender.server(response);
-            gotError = true;
-            return new ArrayList<>();
-        }
-        return products;
-    }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        ErrorSender.wrongHttp(response, "Post");
     }
 }

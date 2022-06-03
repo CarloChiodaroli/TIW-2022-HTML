@@ -6,6 +6,7 @@ import it.polimi.tiw.tiw2022chioda.bean.User;
 import it.polimi.tiw.tiw2022chioda.dao.EstimateDAO;
 import it.polimi.tiw.tiw2022chioda.dao.ProductDAO;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
+import it.polimi.tiw.tiw2022chioda.utils.ErrorSender;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -57,16 +58,25 @@ public class GoToEmployeeHome extends GoToHome {
         try {
             pricedEstimates = estimateDAO.getByUser(user);
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering priced estimates");
+            ErrorSender.database(response, "getting estimates by user");
             return;
         }
+
         try {
             notPricedEstimates = estimateDAO.getNotPriced(user);
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering not priced estimates");
+            ErrorSender.database(response, "getting not priced estimates");
             return;
         }
-        List<Product> products = getAllProducts(productDAO, response);
+
+        List<Product> products = new ArrayList<>();
+        try {
+            products = productDAO.getAll();
+        } catch (SQLException e) {
+            ErrorSender.database(response, "getting products");
+            return;
+        }
+
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
         ctx.setVariable("pricedEstimates", pricedEstimates);
@@ -76,20 +86,8 @@ public class GoToEmployeeHome extends GoToHome {
         templateEngine.process(employeeHomePagePath, ctx, response.getWriter());
     }
 
-    protected List<Product> getAllProducts(ProductDAO productDAO, HttpServletResponse response)
-            throws IOException {
-        List<Product> products;
-        try {
-            products = productDAO.getAll();
-        } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while recovering products");
-            return new ArrayList<>();
-        }
-        return products;
-    }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        ErrorSender.wrongHttp(response, "Post");
     }
 }

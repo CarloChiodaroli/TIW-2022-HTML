@@ -36,38 +36,42 @@ public class CheckLogin extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         System.out.println("CheckLogin got Get");
-        response.getWriter().append("Served at: ").append(request.getContextPath());
+        ErrorSender.wrongHttp(response, "Get");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("CheckLogin started");
+
         String username = null;
         String password = null;
+
         username = StringEscapeUtils.escapeJava(request.getParameter("username"));
         password = StringEscapeUtils.escapeJava(request.getParameter("password"));
-        if(username == null || password == null || username.isEmpty() || password.isEmpty()){
+        if(username == null ||
+                password == null ||
+                username.isEmpty() ||
+                password.isEmpty()){
             System.out.println("CheckLogin got empty Credentials");
-            ErrorSender.user(response, "Credentials must be not empty");
+            ErrorSender.userWrongData(response, "Credentials must be not empty");
             return;
         }
+
         UserDAO userDAO = new UserDAO(connection);
         User user;
         try {
             user = userDAO.checkCredentials(username, password);
         } catch (SQLException e) {
-            ErrorSender.server(response);
+            ErrorSender.database(response, "checking credentials");
             return;
         }
-        String path = getServletContext().getContextPath();
+
         if(user == null){
             ErrorSender.user(response, "Credentials are not valid");
             return;
         }
-        request.getSession().setAttribute("user", user);
 
-        path = path + "/GoToHome";
-        System.out.println("CheckLogin - Successful login");
-        response.sendRedirect(path);
+        request.getSession().setAttribute("user", user);
+        response.sendRedirect(getServletContext().getContextPath() + "/GoToHome");
     }
 }

@@ -3,6 +3,7 @@ package it.polimi.tiw.tiw2022chioda.controller;
 import it.polimi.tiw.tiw2022chioda.bean.User;
 import it.polimi.tiw.tiw2022chioda.enums.UserType;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
+import it.polimi.tiw.tiw2022chioda.utils.ErrorSender;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
@@ -59,17 +60,16 @@ public class GoToHome extends HttpServlet {
         if (servlets.containsKey(user.getUserType())) {
             response.sendRedirect(session.getServletContext().getContextPath() + servlets.get(user.getUserType()));
         } else {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().println("User does have not a home page");
+            ErrorSender.server(response, "User does not have a home page");
             session.invalidate();
-            String path = getServletContext().getContextPath() + "/loginPage.html";
+            String path = getServletContext().getContextPath() + "/index.html";
             response.sendRedirect(path);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        ErrorSender.wrongHttp(response, "Post");
     }
 
     @Override

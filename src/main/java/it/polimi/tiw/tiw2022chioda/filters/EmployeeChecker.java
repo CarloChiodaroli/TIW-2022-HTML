@@ -2,6 +2,7 @@ package it.polimi.tiw.tiw2022chioda.filters;
 
 import it.polimi.tiw.tiw2022chioda.bean.User;
 import it.polimi.tiw.tiw2022chioda.enums.UserType;
+import it.polimi.tiw.tiw2022chioda.utils.ErrorSender;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ public class EmployeeChecker implements Filter {
         User user;
         user = (User) session.getAttribute("user");
         if (!user.getUserType().equals(UserType.EMPLOYEE)) {
-            httpServletResponse.sendRedirect(loginPath);
+            ErrorSender.user(httpServletResponse, HttpServletResponse.SC_FORBIDDEN, "Logged user is not " + UserType.EMPLOYEE);
             return;
         }
         chain.doFilter(request, response);

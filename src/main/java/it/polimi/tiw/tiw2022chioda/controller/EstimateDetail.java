@@ -65,45 +65,54 @@ public class EstimateDetail extends HttpServlet {
         boolean priceEstimatePage = false;
         boolean pricedEstimate = false;
         if (tmpEstCode == null || tmpEstCode.isEmpty()) {
-            ErrorSender.user(response, "Got no Estimate Code");
+            ErrorSender.userWrongData(response, "Got no Estimate Code");
             return;
         }
-        int estimateCode = Integer.parseInt(request.getParameter("estimateCode"));
+        int estimateCode = 0;
+        try{
+            estimateCode = Integer.parseInt(tmpEstCode);
+        } catch(NumberFormatException e){
+            ErrorSender.userWrongData(response, "Estimate code must be an integer");
+        }
+
         Estimate baseEstimate;
         try {
             baseEstimate = estimateDAO.getByCode(estimateCode);
         } catch (SQLException e) {
-            ErrorSender.server(response);
+            ErrorSender.database(response, "getting the estimate");
             return;
         }
         if(baseEstimate == null){
-            ErrorSender.user(response, "There is no estimate with gotten code");
+            ErrorSender.userWrongData(response, "There is no estimate with gotten estimate code");
             return;
         }
+
         pricedEstimate = !(baseEstimate.getEmployeeId() == 0);
         if (!(baseEstimate.getClientId() == user.getID()) && !(baseEstimate.getEmployeeId() == user.getID())) {
             if (user.getUserType().equals(UserType.EMPLOYEE) && baseEstimate.getPrice() == 0) {
-                // decide to go to price estimate page
-                priceEstimatePage = true;
+                priceEstimatePage = true; // Decide that this estimate is not priced and that actual user can price the estimate
             } else {
-                ErrorSender.user(response, "User cannot see this estimate's details");
+                ErrorSender.user(response, HttpServletResponse.SC_FORBIDDEN, "User cannot see this estimate's details");
                 return;
             }
         }
+
         List<Integer> optionCodes;
         try {
             optionCodes = decorDAO.getOptionCodesFromEstimateCode(estimateCode);
         } catch (SQLException e) {
-            ErrorSender.server(response);
+            ErrorSender.database(response, "getting estimate's options");
             return;
         }
+
         baseEstimate.setOptionCodes(optionCodes);
+
         List<Option> options = new ArrayList<>();
         for (int optionCode : baseEstimate.getOptionCodes()) {
             try {
                 options.add(optionDAO.getFromCode(optionCode));
             } catch (SQLException e) {
-                ErrorSender.server(response);
+                ErrorSender.database(response, "getting option from ");
                 return;
             }
         }
@@ -112,7 +121,7 @@ public class EstimateDetail extends HttpServlet {
         try {
             product = productDAO.getByCode(baseEstimate.getProductCode());
         } catch (SQLException e) {
-            ErrorSender.server(response);
+            ErrorSender.database(response);
             return;
         }
 
@@ -123,7 +132,7 @@ public class EstimateDetail extends HttpServlet {
             try {
                 employee = Optional.ofNullable(userDAO.getById(baseEstimate.getEmployeeId()));
             } catch (SQLException e) {
-                ErrorSender.server(response);
+                ErrorSender.database(response);
                 return;
             }
         } else {
@@ -131,7 +140,7 @@ public class EstimateDetail extends HttpServlet {
             try {
                 client = userDAO.getById(baseEstimate.getClientId());
             } catch (SQLException e) {
-                ErrorSender.server(response);
+                ErrorSender.database(response);
                 return;
             }
         }
@@ -151,6 +160,6 @@ public class EstimateDetail extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        ErrorSender.wrongHttp(response, "Post");
     }
 }

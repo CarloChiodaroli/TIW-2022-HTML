@@ -3,9 +3,9 @@ package it.polimi.tiw.tiw2022chioda.controller;
 import it.polimi.tiw.tiw2022chioda.bean.Estimate;
 import it.polimi.tiw.tiw2022chioda.bean.User;
 import it.polimi.tiw.tiw2022chioda.dao.EstimateDAO;
-import it.polimi.tiw.tiw2022chioda.dao.UserDAO;
 import it.polimi.tiw.tiw2022chioda.enums.UserType;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
+import it.polimi.tiw.tiw2022chioda.utils.ErrorSender;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,64 +28,78 @@ public class PriceEstimate extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
+        ErrorSender.wrongHttp(response, "Get");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String price = request.getParameter("price");
-        String employeeId = request.getParameter("employeeId");
-        String estimateCode = request.getParameter("estimateCode");
+        String pricePar = request.getParameter("price");
+        String employeeIdPar = request.getParameter("employeeId");
+        String estimateCodePar = request.getParameter("estimateCode");
 
-        if (price == null ||
-                employeeId == null ||
-                estimateCode == null ||
-                estimateCode.isEmpty() ||
-                price.isEmpty() ||
-                employeeId.isEmpty()){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("Requested data must be not empty");
+        if (pricePar == null ||
+                employeeIdPar == null ||
+                estimateCodePar == null ||
+                estimateCodePar.isEmpty() ||
+                pricePar.isEmpty() ||
+                employeeIdPar.isEmpty()){
+            ErrorSender.user(response,"Requested data must be not empty");
             return;
         }
 
-        if (Double.parseDouble(price) < 0){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("Price cannot be negative");
+        int price;
+        int employeeId;
+        int estimateCode;
+
+        try{
+            price = Integer.parseInt(pricePar);
+            employeeId = Integer.parseInt(employeeIdPar);
+            estimateCode = Integer.parseInt(estimateCodePar);
+        } catch (NumberFormatException e) {
+            ErrorSender.user(response, "Some integer parameters are not integers");
+            return;
+        }
+
+        User employee = (User) request.getSession().getAttribute("user");
+
+        if (employeeId != employee.getID()){
+            ErrorSender.user(response, "Gotten Id is not actual user Id");
+            return;
+        }
+
+        if(employee.getUserType() != UserType.EMPLOYEE){
+            ErrorSender.user(response, "Actual user has to be an Employee User");
+            return;
+        }
+
+        if (price <= 0){
+            ErrorSender.user(response, "Price cannot be negative");
             return;
         }
 
         EstimateDAO estimateDAO = new EstimateDAO(connection);
         Estimate estimate;
         try{
-            estimate = estimateDAO.getByCode(Integer.parseInt(estimateCode));
+            estimate = estimateDAO.getByCode(estimateCode);
         } catch(SQLException e){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while getting data from database 1");
+            ErrorSender.database(response, "getting estimate");
             return;
         }
 
-        UserDAO userDAO = new UserDAO(connection);
-        User employee;
-        try{
-            employee = userDAO.getById(Integer.parseInt(employeeId));
-        } catch (SQLException e){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while getting data from database 2");
-            return;
-        }
-
-        if(!employee.getUserType().equals(UserType.EMPLOYEE)){
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,  "Gotten user ID is not of an employee user");
+        if(estimate == null){
+            ErrorSender.user(response, "Got wrong estimate code");
             return;
         }
 
         try{
-            estimateDAO.priceEstimate(estimate, employee, Double.parseDouble(price));
+            estimateDAO.priceEstimate(estimate, employee, Double.parseDouble(pricePar));
         } catch(SQLException e){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while getting data from database 3");
+            ErrorSender.database(response, "saving price");
             return;
         }
 
-        String path = getServletContext().getContextPath() + "/GoToHome";
+        String path = getServletContext().getContextPath() + "/GoToEmployeeHome";
         response.sendRedirect(path);
     }
 }

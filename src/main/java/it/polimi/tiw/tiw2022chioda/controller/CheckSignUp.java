@@ -2,6 +2,7 @@ package it.polimi.tiw.tiw2022chioda.controller;
 
 import it.polimi.tiw.tiw2022chioda.bean.User;
 import it.polimi.tiw.tiw2022chioda.dao.UserDAO;
+import it.polimi.tiw.tiw2022chioda.enums.UserType;
 import it.polimi.tiw.tiw2022chioda.utils.ConnectionHandler;
 import it.polimi.tiw.tiw2022chioda.utils.ErrorSender;
 import org.apache.commons.text.StringEscapeUtils;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 @WebServlet(name = "CheckSignUp", value = "/CheckSignUp")
@@ -28,8 +30,7 @@ public class CheckSignUp extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("CheckSignUp got Get");
-        response.getWriter().append("Served at: ").append(request.getContextPath());
+        ErrorSender.wrongHttp(response, "Get");
     }
 
     @Override
@@ -58,25 +59,35 @@ public class CheckSignUp extends HttpServlet {
                 repeatedPassword.isEmpty() ||
                 userType.isEmpty() ||
                 eMail.isEmpty()) {
-            ErrorSender.user(response, "Credentials must be not empty");
+            ErrorSender.userWrongData(response, "Credentials must be not empty");
             return;
         }
         if (!password.equals(repeatedPassword)) {
-            ErrorSender.user(response, "Passwords do not coincide");
+            ErrorSender.userWrongData(response, "Passwords do not coincide");
+            return;
+        }
+        if(!isPassword(password)){
+            ErrorSender.userWrongData(response, "Password is not safe");
             return;
         }
         if (!isEMail(eMail)) {
-            ErrorSender.user(response, "Given e-mail is not a valid e-mail address");
+            ErrorSender.userWrongData(response, "Given e-mail is not a valid e-mail address");
             return;
         }
+        String userTypeForLambda = userType;
+        if(Arrays.stream(UserType.values()).map(x -> toString()).noneMatch(x -> x.equals(userTypeForLambda))){
+            ErrorSender.userWrongData(response, "Got wrong user type");
+            return;
+        }
+
         UserDAO userDAO = new UserDAO(connection);
         try {
             if (userDAO.isUsernamePresent(username)) {
-                ErrorSender.user(response, "Username already used");
+                ErrorSender.userWrongData(response, "Username already used");
                 return;
             }
         } catch (SQLException e) {
-            ErrorSender.server(response);
+            ErrorSender.database(response, "checking username duplicates");
             return;
         }
         User user = new User();
@@ -86,20 +97,22 @@ public class CheckSignUp extends HttpServlet {
             user.setEmail(eMail);
             user = userDAO.registerCredentials(user, password);
         } catch (SQLException e) {
-            ErrorSender.server(response);
+            ErrorSender.database(response);
             return;
         }
-        String path = getServletContext().getContextPath();
         if (user == null) {
-            path = path + "/loginPage.html";
+            ErrorSender.database(response);
         } else {
             request.getSession().setAttribute("user", user);
-            path = path + "/GoToHome";
         }
-        response.sendRedirect(path);
+        response.sendRedirect(getServletContext().getContextPath() + "/GoToHome");
     }
 
     private boolean isEMail(String EMail) {
         return Pattern.matches("^[a-zA-Z0-9+_.]+@[a-zA-Z0-9.-]+$", EMail);
+    }
+
+    private boolean isPassword(String password) {
+        return password.matches("^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$");
     }
 }

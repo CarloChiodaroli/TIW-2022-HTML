@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 public class CreateEstimate extends HttpServlet {
 
     private Connection connection;
-    private static final int E400 = HttpServletResponse.SC_BAD_REQUEST;
-
 
     public void init() throws ServletException {
         connection = ConnectionHandler.getConnection(getServletContext());
@@ -33,7 +31,7 @@ public class CreateEstimate extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
+        ErrorSender.wrongHttp(response, "Get");
     }
 
     @Override
@@ -41,12 +39,12 @@ public class CreateEstimate extends HttpServlet {
         HttpSession session = request.getSession();
 
         String[] optionCodes = request.getParameterValues("optionCode");
-        String productCode = StringEscapeUtils.escapeJava(request.getParameter("productCode"));
+        String productCodePar = StringEscapeUtils.escapeJava(request.getParameter("productCode"));
 
-        if (productCode == null ||
+        if (productCodePar == null ||
                 optionCodes == null ||
-                productCode.isEmpty()) {
-            ErrorSender.user(response, "The form has not been completely filled");
+                productCodePar.isEmpty()) {
+            ErrorSender.userWrongData(response, "The form has not been completely filled");
             return;
         }
 
@@ -58,24 +56,39 @@ public class CreateEstimate extends HttpServlet {
 
         Product actualProduct = null;
 
+        int productCode;
+
         try {
-            actualProduct = productDAO.getByCode(Integer.parseInt(productCode));
+            productCode = Integer.parseInt(productCodePar);
+        } catch (NumberFormatException e) {
+            ErrorSender.userNotNumber(response);
+            return;
+        }
+
+        try {
+            actualProduct = productDAO.getByCode(productCode);
         } catch (SQLException e) {
-            ErrorSender.server(response);
+            ErrorSender.database(response);
             return;
         }
 
         if(actualProduct == null){
-            ErrorSender.user(response, "A valid product ID must be given");
+            ErrorSender.userWrongData(response, "A valid product ID must be given");
             return;
         }
 
-        List<Integer> optCodes = optionCode.stream()
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+        List<Integer> optCodes;
+        try {
+            optCodes = optionCode.stream()
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+        } catch(NumberFormatException e) {
+            productCode = Integer.parseInt(productCodePar);
+            return;
+        }
 
         if(optCodes.isEmpty()){
-            ErrorSender.user(response, "At leas one valid option code must be given");
+            ErrorSender.userWrongData(response, "At leas one valid option code must be given");
             return;
         }
 
@@ -83,12 +96,12 @@ public class CreateEstimate extends HttpServlet {
         try {
             possibleOptCodes = availabilityDAO.getFromProduct(actualProduct.getCode());
         } catch (SQLException e){
-            ErrorSender.server(response);
+            ErrorSender.database(response);
             return;
         }
 
         if(!possibleOptCodes.containsAll(optCodes)){
-            ErrorSender.user(response, "Some options are not available for the selected product");
+            ErrorSender.userWrongData(response, "Some options are not available for the selected product");
             return;
         }
 
@@ -96,12 +109,14 @@ public class CreateEstimate extends HttpServlet {
         candidate.setClient((User) session.getAttribute("user"));
         candidate.setProductCode(actualProduct.getCode());
         candidate.setOptionCodes(optCodes);
+
         try{
             estimateDAO.createEstimate(candidate, (User) session.getAttribute("user"));
         } catch (SQLException e){
-            ErrorSender.server(response);
+            ErrorSender.database(response);
             return;
         }
+
         response.sendRedirect(session.getServletContext().getContextPath() + "/GoToClientHome");
     }
 }
