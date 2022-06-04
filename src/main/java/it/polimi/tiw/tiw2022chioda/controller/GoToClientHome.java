@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @WebServlet(name = "GoToClientHome", value = "/GoToClientHome")
 public class GoToClientHome extends GoToHome {
@@ -52,20 +54,19 @@ public class GoToClientHome extends GoToHome {
         HttpSession session = request.getSession();
         EstimateDAO estimateDAO = new EstimateDAO(connection);
         ProductDAO productDAO = new ProductDAO(connection);
-        AvailabilityDAO availabilityDAO = new AvailabilityDAO(connection);
         OptionDAO optionDAO = new OptionDAO(connection);
         User user = (User) session.getAttribute("user");
 
         List<Estimate> userEstimates = new ArrayList<>();
         try {
-            userEstimates        = estimateDAO.getByUser(user);
+            userEstimates = estimateDAO.getByUser(user);
         } catch (SQLException e) {
             ErrorSender.database(response, "getting user estimates");
         }
 
         List<Product> products = new ArrayList<>();
         try {
-            products  = productDAO.getAll();
+            products = productDAO.getAll();
         } catch (SQLException e) {
             ErrorSender.database(response, "getting products");
         }
@@ -79,21 +80,19 @@ public class GoToClientHome extends GoToHome {
         if (chosenProduct != null) {
             try {
                 productCode = Integer.parseInt(chosenProduct);
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 ErrorSender.userNotNumber(response, "productCode");
             }
-            try {
-                actualProduct = Optional.ofNullable(productDAO.getByCode(productCode));
-            } catch (SQLException e) {
-                ErrorSender.database(response, "getting the actual product");
-                return;
-            }
-            if(actualProduct.isEmpty()) {
+            int finalProductCode = productCode;
+            actualProduct = products.stream()
+                    .filter(product -> product.getCode() == finalProductCode)
+                    .findFirst();
+            if (actualProduct.isEmpty()) {
                 ErrorSender.userWrongData(response, "No product has " + productCode + " as product code");
                 return;
             } else {
                 try {
-                    List<Integer> optionCodes = availabilityDAO.getFromProduct(productCode);
+                    List<Integer> optionCodes = optionDAO.codesFromProduct(productCode);
                     for (Integer optionCode : optionCodes) {
                         optionsOfProduct.add(optionDAO.getFromCode(optionCode));
                     }
@@ -111,7 +110,8 @@ public class GoToClientHome extends GoToHome {
         ctx.setVariable("actualProductCode", productCode);
         actualProduct.ifPresent(product -> {
             ctx.setVariable("actualProduct", product);
-            ctx.setVariable("options", optionsOfProduct);});
+            ctx.setVariable("options", optionsOfProduct);
+        });
         ctx.setVariable("user", user.getUsername());
         templateEngine.process(clientHomePagePath, ctx, response.getWriter());
     }

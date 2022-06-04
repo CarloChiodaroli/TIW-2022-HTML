@@ -17,29 +17,6 @@ public class EstimateDAO extends DAO {
         super(connection);
     }
 
-    public Estimate getByCode(int code) throws WrongUserTypeException, SQLException {
-        String query = "SELECT CLIENT, EMPLOYEE, PRICE, PRODUCT, CODE " +
-                "FROM ESTIMATE " +
-                "WHERE CODE = ?";
-        PreparedStatement preparedStatement = super.prepareQuery(query);
-        preparedStatement.setInt(1, code);
-        ResultSet result = super.coreQueryExecutor(preparedStatement);
-        if(!result.isBeforeFirst()) return null;
-        result.next();
-        return coreEstimateSetter(result);
-    }
-
-    public List<Estimate> getNotPriced(User user) throws WrongUserTypeException, SQLException {
-        controlEmployee(user);
-        String query = "SELECT CLIENT, EMPLOYEE, PRICE, PRODUCT, CODE " +
-                "FROM ESTIMATE " +
-                "WHERE EMPLOYEE IS NULL ";
-        PreparedStatement preparedStatement = super.prepareQuery(query);
-        ResultSet result = super.coreQueryExecutor(preparedStatement);
-        if(!result.isBeforeFirst()) return new ArrayList<>();
-        return coreEstimateListSetter(result);
-    }
-
     public List<Estimate> getByUser(User user) throws WrongUserTypeException, SQLException {
         Map<UserType, String> queries = new HashMap<>();
         String query = "SELECT CLIENT, EMPLOYEE, PRICE, PRODUCT, CODE " +
@@ -59,47 +36,26 @@ public class EstimateDAO extends DAO {
         return coreEstimateListSetter(result);
     }
 
-    private Estimate coreEstimateSetter(ResultSet result) throws SQLException {
-        Estimate estimate = new Estimate();
-        estimate.setClientId(result.getInt("CLIENT"));
-        estimate.setEmployeeId(result.getInt("EMPLOYEE"));
-        estimate.setPrice(result.getDouble("PRICE"));
-        estimate.setProductCode(result.getInt("PRODUCT"));
-        estimate.setCode(result.getInt("CODE"));
-        return estimate;
-    }
-
-    private List<Estimate> coreEstimateListSetter(ResultSet result) throws SQLException {
-        List<Estimate> estimateList = new ArrayList<>();
-        while (result.next()) {
-            estimateList.add(coreEstimateSetter(result));
-        }
-        return estimateList;
-    }
-
-    private void controlEmployee(User user)
-            throws WrongUserTypeException {
-        if (!user.getUserType().equals(UserType.EMPLOYEE))
-            throw new WrongUserTypeException(user.getUserType(), UserType.EMPLOYEE);
-    }
-
-    private void controlClient(User user)
-            throws WrongUserTypeException {
-        if (!user.getUserType().equals(UserType.CLIENT))
-            throw new WrongUserTypeException(user.getUserType(), UserType.CLIENT);
-    }
-
-    public void priceEstimate(Estimate estimate, User employee, double price)
-            throws WrongUserTypeException, SQLException {
-        controlEmployee(employee);
-        String query = "UPDATE ESTIMATE " +
-                "SET EMPLOYEE = ?, PRICE = ? " +
-                "WHERE CODE = ? ";
+    public Estimate getByCode(int code) throws WrongUserTypeException, SQLException {
+        String query = "SELECT CLIENT, EMPLOYEE, PRICE, PRODUCT, CODE " +
+                "FROM ESTIMATE " +
+                "WHERE CODE = ?";
         PreparedStatement preparedStatement = super.prepareQuery(query);
-        preparedStatement.setInt(1, employee.getID());
-        preparedStatement.setDouble(2, price);
-        preparedStatement.setInt(3, estimate.getCode());
-        preparedStatement.executeUpdate();
+        preparedStatement.setInt(1, code);
+        ResultSet result = super.coreQueryExecutor(preparedStatement);
+        if(!result.isBeforeFirst()) return null;
+        result.next();
+        return coreEstimateSetter(result);
+    }
+
+    public List<Estimate> getNotPriced() throws SQLException {
+        String query = "SELECT CLIENT, EMPLOYEE, PRICE, PRODUCT, CODE " +
+                "FROM ESTIMATE " +
+                "WHERE EMPLOYEE IS NULL ";
+        PreparedStatement preparedStatement = super.prepareQuery(query);
+        ResultSet result = super.coreQueryExecutor(preparedStatement);
+        if(!result.isBeforeFirst()) return new ArrayList<>();
+        return coreEstimateListSetter(result);
     }
 
     public Estimate createEstimate(Estimate candidate, User client)
@@ -139,6 +95,49 @@ public class EstimateDAO extends DAO {
         } else {
             throw new SQLException("Estimate registration failed, no code obtained");
         }
+    }
+
+    public void priceEstimate(Estimate estimate, User employee, double price)
+            throws WrongUserTypeException, SQLException {
+        controlEmployee(employee);
+        String query = "UPDATE ESTIMATE " +
+                "SET EMPLOYEE = ?, PRICE = ? " +
+                "WHERE CODE = ? ";
+        PreparedStatement preparedStatement = super.prepareQuery(query);
+        preparedStatement.setInt(1, employee.getID());
+        preparedStatement.setDouble(2, price);
+        preparedStatement.setInt(3, estimate.getCode());
+        preparedStatement.executeUpdate();
+    }
+
+    private Estimate coreEstimateSetter(ResultSet result) throws SQLException {
+        Estimate estimate = new Estimate();
+        estimate.setClientId(result.getInt("CLIENT"));
+        estimate.setEmployeeId(result.getInt("EMPLOYEE"));
+        estimate.setPrice(result.getDouble("PRICE"));
+        estimate.setProductCode(result.getInt("PRODUCT"));
+        estimate.setCode(result.getInt("CODE"));
+        return estimate;
+    }
+
+    private List<Estimate> coreEstimateListSetter(ResultSet result) throws SQLException {
+        List<Estimate> estimateList = new ArrayList<>();
+        while (result.next()) {
+            estimateList.add(coreEstimateSetter(result));
+        }
+        return estimateList;
+    }
+
+    private void controlEmployee(User user)
+            throws WrongUserTypeException {
+        if (!user.getUserType().equals(UserType.EMPLOYEE))
+            throw new WrongUserTypeException(user.getUserType(), UserType.EMPLOYEE);
+    }
+
+    private void controlClient(User user)
+            throws WrongUserTypeException {
+        if (!user.getUserType().equals(UserType.CLIENT))
+            throw new WrongUserTypeException(user.getUserType(), UserType.CLIENT);
     }
 
     private void registerOptions(Estimate estimate) throws SQLException {

@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class OptionDAO extends DAO {
 
@@ -27,5 +28,15 @@ public class OptionDAO extends DAO {
         option.setType(resultSet.getString("TYPE"));
         option.setName(resultSet.getString("NAME"));
         return option;
+    }
+
+    public List<Integer> codesFromEstimate(int estimateCode) throws SQLException {
+        DecorDAO decorDAO = new DecorDAO(getConnection());
+        return decorDAO.getOptionCodesFromEstimateCode(estimateCode);
+    }
+
+    public List<Integer> codesFromProduct(int productCode) throws SQLException {
+        AvailabilityDAO availabilityDAO = new AvailabilityDAO(getConnection());
+        return availabilityDAO.getFromProduct(productCode);
     }
 }
