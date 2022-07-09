@@ -24,11 +24,11 @@ form > label > select {
     min-width: 13em;
     width: fit-content;
     margin: auto 0 auto auto;
+    color: black;
 }
 
 form > label > input:focus {
     outline: none;
-    background-color: var(--background-lev3);
     border-color: greenyellow;
 }
 

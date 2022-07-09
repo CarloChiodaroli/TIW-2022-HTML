@@ -63,7 +63,7 @@ public class GoToEmployeeHome extends GoToHome {
         }
 
         try {
-            notPricedEstimates = estimateDAO.getNotPriced(user);
+            notPricedEstimates = estimateDAO.getNotPriced();
         } catch (SQLException e) {
             ErrorSender.database(response, "getting not priced estimates");
             return;
